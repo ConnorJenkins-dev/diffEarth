@@ -11,6 +11,8 @@ Fergus
 Cole
 * I’ll say when I get my work rota when I will be at work during the week and will work between 11 and 8 where I am available
 * CP
+* WC 27th Jan - working wednesday 29th from 1700
+* WC 3rd Feb - free (friday unknown)
 
 Diyorbek
 * Monday – Friday (1pm – 8pm) Weekends too if need
