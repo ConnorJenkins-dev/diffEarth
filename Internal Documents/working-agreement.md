@@ -22,6 +22,11 @@ Connor
 * Monday – Friday 11:00 – 20:00
 * CJ
 
+Beau
+* Sunday-Saturday 12:00 - 20:00
+* select days will be given with 3 days notice via teams chat
+* BM
+
 Code Quality
 * Code will be pushed to a separate feature branch
 * Code will be maintainable, clear and well-documented
@@ -54,4 +59,4 @@ Meetings
 General Working Environment
 * Disagreements will be handled respectfully
 * Ideas reviewed critically by the team
-* Alternative ideas will be raised and discussed
+* Alternative ideas will be documented, raised and discussed
