@@ -1,0 +1,26 @@
+@import './base.css';
+@import "tailwindcss";
+@import 'primeicons/primeicons.css';
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  background-color: #FFFFFF;
+}
+body {
+  background-color: #FFFFFF;
+}
+
+#nav {
+  padding: 1rem;
+}
+
+.filter-button {
+  @apply border-2 rounded-full w-full bg-blue-500 hover:bg-blue-700 text-white py-0.5 px-4;
+}
