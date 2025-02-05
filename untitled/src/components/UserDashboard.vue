@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import PlaceholderGraph from "@/components/PlaceholderGraph.vue";
 
-
 </script>
 <style>
 
@@ -49,30 +48,30 @@ import PlaceholderGraph from "@/components/PlaceholderGraph.vue";
       <PlaceholderGraph />
     </section>
   </section>
-  <aside class="w-3/10 m-1 border-2">
+  <aside class="w-3/10 m-1 border-2 items-center grid items-center justify-center">
     <map>
-      <img src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png" class="w-fit mx-3">
+      <img src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png" class="w-fit">
     </map>
-    <section id="list" class="border-4 m-auto">
-      <h3 class="text-center text-black">Title</h3>
+    <section id="list" class="border-4">
+      <h2 class="text-center text-black">Title</h2>
       <ul>
-        <li class="m-auto p-3">
+        <li class="p-3">
           <h4 class="text-black text-center underline" >List Item</h4>
           <p class="text-black">Supporting line text lorem ipsum dolor sit amet, consectetur</p>
         </li>
-        <li class="m-auto p-3">
+        <li class=" p-3">
           <h4 class="text-black text-center underline">List Item</h4>
           <p class="text-black">Supporting line text lorem ipsum dolor sit amet, consectetur</p>
         </li>
-        <li class="m-auto p-3">
+        <li class="p-3">
           <h4 class="text-black text-center underline">List Item</h4>
           <p class="text-black">Supporting line text lorem ipsum dolor sit amet, consectetur</p>
         </li>
-        <li class="m-auto p-3">
+        <li class="p-3">
           <h4 class="text-black text-center underline">List Item</h4>
           <p class="text-black">Supporting line text lorem ipsum dolor sit amet, consectetur</p>
         </li>
-        <li class="m-auto p-3">
+        <li class="p-3">
           <h4 class="text-black text-center underline">List Item</h4>
           <p class="text-black">Supporting line text lorem ipsum dolor sit amet, consectetur</p>
         </li>
@@ -80,7 +79,6 @@ import PlaceholderGraph from "@/components/PlaceholderGraph.vue";
     </section>
   </aside>
  </body>
-
 
 </template>
 
