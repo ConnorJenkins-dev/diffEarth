@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import FileUpload from '@/components/FileUpload.vue';
 
 </script>
 <style>
@@ -7,8 +8,9 @@ import { ref } from 'vue'
 </style>
 
 <template>
- <body class="flex flex-row w-full">
-  <section class="w-3/5 m-1 border-2">
+ <body>
+ <FileUpload/>
+  <section class="w-3/5 m-1 border-2 flex flex-row w-full">
     <div id="nav" class="">
       <nav class="flex w-full">
         <ul class="flex flex-wrap justify-between w-full">
