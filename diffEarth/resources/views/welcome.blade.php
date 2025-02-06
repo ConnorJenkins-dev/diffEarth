@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     @vite('resources/css/app.css')
+
     <title>{{ config('app.name') }}</title>
 </head>
 <body>

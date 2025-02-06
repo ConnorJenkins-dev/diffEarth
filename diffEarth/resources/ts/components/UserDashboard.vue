@@ -1,6 +1,7 @@
 <script setup>
 import PlaceholderGraph from "./PlaceholderGraph.vue";
 import DashboardButton from "./DashboardButton.vue";
+import FileUpload from "./FileUpload.vue";
 </script>
 
 <template>
@@ -41,15 +42,17 @@ import DashboardButton from "./DashboardButton.vue";
                 <PlaceholderGraph />
             </section>
         </section>
-        <aside class="w-3/10 m-1 items-center grid items-center justify-center">
-            <map>
+        <aside class="w-3/10 m-1 grid items-center justify-center">
+            <map class="mb-2">
                 <img
                     src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png"
                     class="w-fit"
                 />
             </map>
             <section id="list" class="">
-                <h2 class="text-center text-black">Title</h2>
+                <div class="flex justify-center">
+                    <FileUpload />
+                </div>
                 <ul>
                     <li class="p-3">
                         <h4 class="text-black text-center underline">
