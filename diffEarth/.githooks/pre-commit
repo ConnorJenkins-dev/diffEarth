@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Generated with ChatGPT - runs formatters before commit
+echo "🔍 Running formatters before commit..."
+cd diffEarth
+
+# Run npm formatting
+if npm run format; then
+    echo "✅ NPM formatting successful!"
+else
+    echo "❌ NPM formatting failed! Fix issues before committing."
+    exit 1
+fi
+
+# Run Composer formatting
+if composer format; then
+    echo "✅ Composer formatting successful!"
+else
+    echo "❌ Composer formatting failed! Fix issues before committing."
+    exit 1
+fi
+
+# Stage formatted files
+git add .
+
+echo "✅ All files formatted and staged!"
