@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import UserDashboard from "./components/UserDashboard.vue";
 </script>
 
 <template>
     <div>
-        <HelloWorld />
+        <UserDashboard />
     </div>
 </template>
