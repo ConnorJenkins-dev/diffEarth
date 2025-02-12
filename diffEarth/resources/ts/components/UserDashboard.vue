@@ -2,9 +2,11 @@
 import PlaceholderGraph from "./PlaceholderGraph.vue";
 import DashboardButton from "./DashboardButton.vue";
 import FileUpload from "./FileUpload.vue";
+import Header from "./Header.vue";
 </script>
 
 <template>
+    <Header />
     <body class="flex flex-row w-full">
         <section class="w-7/10 m-1 items-center justify-center">
             <div id="nav" class="">
