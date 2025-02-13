@@ -2,9 +2,5 @@
 <ruleset name="Laravel Coding Standard">
     <description>Custom PHP CodeSniffer rules for Laravel.</description>
     <rule ref="PSR12"/>
-    <rule ref="Generic.Formatting.SpaceAfterNot">
-        <properties>
-            <property name="spacing" value="1"/>
-        </properties>
-    </rule>
+
 </ruleset>

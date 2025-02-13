@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from "vue";
+import { useToast } from "../composables/useToast";
 
 const showModal = ref(false);
 const selectedFile = ref(null);
+const { showToast } = useToast();
+const uploading = ref(false);
 
 function openModal() {
     showModal.value = true;
@@ -15,15 +18,31 @@ function closeModal() {
 function onFileChange(event) {
     const target = event.target;
     if (target.files && target.files.length > 0) {
-        selectedFile.value = target.files[0];
+        const file = target.files[0];
+        // Check if file size is greater than 20MB
+        if (file.size > 20 * 1024 * 1024) {
+            showToast(
+                "File is too large. Maximum allowed size is 20MB.",
+                "error",
+            );
+            selectedFile.value = null;
+            return;
+        }
+        selectedFile.value = file;
     }
+}
+
+function showAToast() {
+    showToast("Hello");
 }
 
 async function handleUpload() {
     if (!selectedFile.value) {
-        console.error("No file selected");
+        showToast("Please select a file to upload", "error");
         return;
     }
+    uploading.value = true;
+    showToast("Uploading...", "success", 3000);
 
     // Create a FormData object and append the file.
     const formData = new FormData();
@@ -38,19 +57,26 @@ async function handleUpload() {
                 // Note: Do not set the 'Content-Type' header when sending FormData.
             },
         });
+        if (response) {
+            uploading.value = false;
+        }
+        const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`);
+        if (response.status === 422) {
+            showToast(data.message, "error");
+            return;
         }
 
-        const data = await response.json();
-        console.log("Upload successful:", data);
-    } catch (error) {
-        console.error("Error during file upload:", error);
-    }
+        if (!response.ok) {
+            showToast(data.message, "error");
+            return;
+        }
 
-    // Close the modal and clear the file after upload.
-    closeModal();
+        showToast(data.message, "success");
+        closeModal();
+    } catch (error) {
+        showToast(error, "error");
+    }
 }
 </script>
 
@@ -62,7 +88,6 @@ async function handleUpload() {
         >
             upload csv
         </button>
-
         <transition name="modal">
             <div
                 v-if="showModal"
@@ -93,9 +118,32 @@ async function handleUpload() {
                         <div class="flex justify-end space-x-2">
                             <button
                                 type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                :disabled="uploading"
+                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Upload
+                                <template v-if="uploading">
+                                    <svg
+                                        class="animate-spin h-5 w-5 inline-block mr-2"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            class="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="4"
+                                        ></circle>
+                                        <path
+                                            class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                        ></path>
+                                    </svg>
+                                </template>
+                                <template v-else> Upload </template>
                             </button>
                             <button
                                 type="button"

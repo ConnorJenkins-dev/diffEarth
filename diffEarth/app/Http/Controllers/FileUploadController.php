@@ -2,24 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessCsvJob;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class FileUploadController extends Controller
 {
     public function store(Request $request)
     {
-        Log::info('File uploaded');
-        $data = $request;
+        // File is required and must be a CSV
+        $request->validate([
+            'file' => 'required|file|mimes:csv|max:20480'
+        ], [
+            'file.mimes' => 'Uploaded file must be a valid CSV.'
+        ]);
 
-        $file = $data->file('file');
-        // Get the original file name or create your own
-        $filename = $file->getClientOriginalName();
-
-        // Move the file to a destination within the public directory
+        $file = $request->file('file');
         $destinationPath = public_path('uploads');
-        $file->move($destinationPath, $filename);
+        $timestampedFilename = now()->format('YmdHis') . '_' . $file->getClientOriginalName();
+        $file->move($destinationPath, $timestampedFilename);
+        $relativePath = 'uploads/' . $timestampedFilename;
 
-        return response()->json(['message' => 'File uploaded successfully']);
+        ProcessCsvJob::dispatch($relativePath, $timestampedFilename);
+
+        return response()->json([
+            'message' => 'File uploaded successfully and is being processed in the background.'
+            . ' Check back in a few minutes.'
+        ]);
     }
 }

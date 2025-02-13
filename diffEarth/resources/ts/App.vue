@@ -1,12 +1,11 @@
 <script setup lang="ts">
-// import UserDashboard from "./components/UserDashboard.vue";
-// import AboutUs from "./components/AboutUs.vue";
-import AboutCard from "./components/AboutCard.vue";
-import AboutUs from "./components/AboutUs.vue";
+import UserDashboard from "./components/UserDashboard.vue";
+import Toast from "./components/Toast.vue";
 </script>
 
 <template>
+    <Toast />
     <div>
-        <AboutUs />
+        <UserDashboard />
     </div>
 </template>
