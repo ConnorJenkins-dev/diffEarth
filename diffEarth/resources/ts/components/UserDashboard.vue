@@ -1,14 +1,14 @@
 <script setup>
-import PlaceholderGraph from "./PlaceholderGraph.vue";
 import DashboardButton from "./DashboardButton.vue";
 import FileUpload from "./FileUpload.vue";
+import PlotlyGraph from "./PlotlyGraph.vue";
 import Header from "./Header.vue";
 </script>
 
 <template>
     <Header />
     <body class="flex flex-row w-full">
-        <section class="w-7/10 m-1 items-center justify-center">
+        <section class="m-3 flex shrink w-7/10 flex-col">
             <div id="nav" class="">
                 <nav class="flex w-full">
                     <ul class="flex flex-wrap justify-between w-full">
@@ -39,16 +39,15 @@ import Header from "./Header.vue";
                     </ul>
                 </nav>
             </div>
-            <section id="maps" class="grid items-center justify-center">
-                <PlaceholderGraph />
-                <PlaceholderGraph />
+            <section id="maps" class="flex items-center justify-center">
+                <PlotlyGraph />
             </section>
         </section>
-        <aside class="w-3/10 m-1 grid items-center justify-center">
-            <map class="mb-2">
+        <aside class="m-3">
+            <map class="m-3 margin-auto">
                 <img
                     src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png"
-                    class="w-fit"
+                    class="flex"
                 />
             </map>
             <section id="list" class="">
