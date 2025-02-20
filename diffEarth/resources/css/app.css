@@ -1,3 +1,32 @@
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 @source "../views";
+
+@tailwind utilities;
+
+/* Define color variables */
+:root {
+    --darkBlue: #223352;
+    --greyBlue: #b8c1d1;
+    --greyBlueAlt: #7e8ca7;
+    --richBlue: #0f0f53;
+    --lightBlue: #689cfc;
+    --darkestBlue: #0d1a33;
+    --darkBlueAlt: #373545;
+}
+
+#app {
+    margin: 0 auto;
+    padding: 2rem;
+    font-weight: normal;
+    background-color: var(--greyBlue); /* Updated background */
+}
+
+body {
+    background-color: var(--greyBlue); /* Updated background */
+}
+
+/* Navigation Bar */
+#nav {
+    padding: 1rem;
+}

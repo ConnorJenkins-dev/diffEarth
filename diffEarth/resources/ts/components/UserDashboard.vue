@@ -1,32 +1,42 @@
 <script setup>
 import DashboardButton from "./DashboardButton.vue";
 import FileUpload from "./FileUpload.vue";
-import PlotlyGraph from "./PlotlyGraph.vue";
 import Header from "./Header.vue";
+import PlotlyGraph from "./PlotlyGraph.vue";
 </script>
 
 <template>
     <Header />
-    <body class="flex flex-row w-full">
-        <section class="m-3 flex shrink w-7/10 flex-col">
-            <div id="nav" class="">
+    <body class="flex flex-row w-full bg-[var(--greyBlue)]">
+        <section
+            class="w-7/10 m-1 border-2 border-[var(--darkBlue)] bg-white rounded-lg shadow-md p-4"
+        >
+            <div id="nav" class="p-4">
                 <nav class="flex w-full">
                     <ul class="flex flex-wrap justify-between w-full">
                         <li class="flex-1 text-center">
-                            <DashboardButton> Sort by date </DashboardButton>
+                            <DashboardButton> Button 1</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton>
-                                Hide some graphs
-                            </DashboardButton>
+                            <DashboardButton> Button 2</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Show all graphs </DashboardButton>
+                            <DashboardButton> Button 3</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton>
-                                Show only last month
-                            </DashboardButton>
+                            <DashboardButton> Button 4</DashboardButton>
+                        </li>
+                        <li class="flex-1 text-center">
+                            <DashboardButton> Button 5</DashboardButton>
+                        </li>
+                        <li class="flex-1 text-center">
+                            <DashboardButton> Button 6</DashboardButton>
+                        </li>
+                        <li class="flex-1 text-center">
+                            <DashboardButton> Button 7</DashboardButton>
+                        </li>
+                        <li class="flex-1 text-center">
+                            <DashboardButton> Button 8</DashboardButton>
                         </li>
                     </ul>
                 </nav>
@@ -35,59 +45,32 @@ import Header from "./Header.vue";
                 <PlotlyGraph />
             </section>
         </section>
-        <aside class="m-3">
-            <map class="m-3 margin-auto">
+        <aside
+            class="w-3/10 m-1 border-2 border-[var(--darkBlue)] bg-[var(--greyBlueAlt)] rounded-lg shadow-lg p-4 flex flex-col items-center"
+        >
+            <map class="mb-2">
                 <img
                     src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png"
                     class="flex"
                 />
             </map>
-            <section id="list" class="">
+            <section
+                id="list"
+                class="border-4 border-[var(--darkBlue)] w-full rounded-md p-4 bg-white"
+            >
                 <div class="flex justify-center">
                     <FileUpload />
                 </div>
                 <ul>
-                    <li class="p-3">
-                        <h4 class="text-black text-center underline">
+                    <li
+                        class="p-3 border-b border-[var(--darkBlue)] last:border-0"
+                    >
+                        <h4
+                            class="text-[var(--darkBlueAlt)] text-center underline font-medium"
+                        >
                             List Item
                         </h4>
-                        <p class="text-black">
-                            Supporting line text lorem ipsum dolor sit amet,
-                            consectetur
-                        </p>
-                    </li>
-                    <li class="p-3">
-                        <h4 class="text-black text-center underline">
-                            List Item
-                        </h4>
-                        <p class="text-black">
-                            Supporting line text lorem ipsum dolor sit amet,
-                            consectetur
-                        </p>
-                    </li>
-                    <li class="p-3">
-                        <h4 class="text-black text-center underline">
-                            List Item
-                        </h4>
-                        <p class="text-black">
-                            Supporting line text lorem ipsum dolor sit amet,
-                            consectetur
-                        </p>
-                    </li>
-                    <li class="p-3">
-                        <h4 class="text-black text-center underline">
-                            List Item
-                        </h4>
-                        <p class="text-black">
-                            Supporting line text lorem ipsum dolor sit amet,
-                            consectetur
-                        </p>
-                    </li>
-                    <li class="p-3">
-                        <h4 class="text-black text-center underline">
-                            List Item
-                        </h4>
-                        <p class="text-black">
+                        <p class="text-[var(--richBlue)] text-sm">
                             Supporting line text lorem ipsum dolor sit amet,
                             consectetur
                         </p>
@@ -97,5 +80,4 @@ import Header from "./Header.vue";
         </aside>
     </body>
 </template>
-
 <style scoped></style>

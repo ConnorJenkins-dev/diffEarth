@@ -44,7 +44,6 @@ async function handleUpload() {
     uploading.value = true;
     showToast("Uploading...", "success", 3000);
 
-    // Create a FormData object and append the file.
     const formData = new FormData();
     formData.append("file", selectedFile.value);
 
@@ -54,7 +53,6 @@ async function handleUpload() {
             body: formData,
             headers: {
                 Accept: "application/json",
-                // Note: Do not set the 'Content-Type' header when sending FormData.
             },
         });
         if (response) {
@@ -84,9 +82,9 @@ async function handleUpload() {
     <div>
         <button
             @click="openModal"
-            class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white px-1 border border-blue-500 hover:border-transparent rounded"
+            class="bg-[var(--lightBlue)] border-2 border-[var(--darkestBlue)] rounded-lg px-4 py-2 font-bold transition hover:bg-[var(--darkestBlue)] hover:border-[var(--lightBlue)] hover:text-white"
         >
-            upload csv
+            Upload CSV
         </button>
         <transition name="modal">
             <div
@@ -101,7 +99,9 @@ async function handleUpload() {
                     >
                         &#10006;
                     </button>
-                    <h2 class="text-xl font-bold mb-4">Upload File</h2>
+                    <h2 class="text-xl font-bold mb-4 text-black">
+                        Upload File
+                    </h2>
 
                     <form @submit.prevent="handleUpload">
                         <label
