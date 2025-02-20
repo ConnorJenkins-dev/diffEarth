@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,5 @@ Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
 });
+
+Route::post('/send-email', [EmailController::class, 'sendEmail']);
