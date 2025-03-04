@@ -13,28 +13,20 @@ import Header from "./Header.vue";
                 <nav class="flex w-full">
                     <ul class="flex flex-wrap justify-between w-full">
                         <li class="flex-1 text-center">
-                            <dashboard-button />
+                            <DashboardButton> Sort by date </DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <dashboard-button />
+                            <DashboardButton>
+                                Hide some graphs
+                            </DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <dashboard-button />
+                            <DashboardButton> Show all graphs </DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <dashboard-button />
-                        </li>
-                        <li class="flex-1 text-center">
-                            <dashboard-button />
-                        </li>
-                        <li class="flex-1 text-center">
-                            <dashboard-button />
-                        </li>
-                        <li class="flex-1 text-center">
-                            <dashboard-button />
-                        </li>
-                        <li class="flex-1 text-center">
-                            <dashboard-button />
+                            <DashboardButton>
+                                Show only last month
+                            </DashboardButton>
                         </li>
                     </ul>
                 </nav>
