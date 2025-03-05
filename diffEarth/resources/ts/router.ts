@@ -2,12 +2,14 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import UserDashboard from "./components/UserDashboard.vue";
 import AboutUs from "./components/AboutUs.vue";
 import PageNotFound from "./components/PageNotFound.vue";
+import MapPage from "./components/MapPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/", redirect: "/dashboard" },
     { path: "/home", redirect: "/dashboard" },
     { path: "/dashboard", component: UserDashboard },
     { path: "/about", component: AboutUs },
+    { path: "/map", component: MapPage },
     { path: "/:catchAll(.*)", component: PageNotFound },
 ];
 

@@ -12,6 +12,9 @@
             </div>
         </div>
         <div class="absolute bottom-2 right-4 flex gap-4">
+            <router-link to="/map">
+                <div class="text-xl text-greyBlue underline">Map</div>
+            </router-link>
             <router-link to="/about">
                 <div class="text-xl text-greyBlue underline">About Us</div>
             </router-link>

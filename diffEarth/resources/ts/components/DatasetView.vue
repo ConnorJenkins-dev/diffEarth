@@ -113,8 +113,7 @@ onMounted(() => {
 
             <!-- Responsive Data Table -->
             <div class="overflow-x-auto">
-                <table
-                >
+                <table>
                     <thead
                         class="bg-gray-100 text-gray-700 text-xs uppercase font-medium"
                     >
