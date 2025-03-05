@@ -4,6 +4,7 @@ import FileUpload from "./FileUpload.vue";
 import Header from "./Header.vue";
 import DatasetView from "./DatasetView.vue";
 import PlotlyGraph from "./PlotlyGraph.vue";
+import EmailForm from "./EmailForm.vue";
 </script>
 
 <template>
@@ -46,6 +47,7 @@ import PlotlyGraph from "./PlotlyGraph.vue";
                 <PlotlyGraph />
             </section>
         </section>
+
         <aside
             class="w-3/10 m-1 border-2 border-[var(--darkBlue)] bg-[var(--greyBlueAlt)] rounded-lg shadow-lg p-4 flex flex-col items-center"
         >
@@ -63,6 +65,14 @@ import PlotlyGraph from "./PlotlyGraph.vue";
                     <FileUpload />
                 </div>
                 <DatasetView />
+            </section>
+            <section
+                id="email"
+                class="border-4 border-[var(--darkBlue)] w-full rounded-md p-4 bg-white"
+            >
+                <div class="flex justify-center">
+                    <EmailForm />
+                </div>
             </section>
         </aside>
     </body>

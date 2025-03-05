@@ -40,12 +40,28 @@ before_script:
   - npm run build
   - php artisan migrate --force
   - php artisan db:seed --force
+  - echo "MAIL_MAILER=$MAIL_MAILER" >> .env
+  - echo "MAIL_HOST=$MAIL_HOST" >> .env
+  - echo "MAIL_PORT=$MAIL_PORT" >> .env
+  - echo "MAIL_USERNAME=$MAIL_USERNAME" >> .env
+  - echo "MAIL_PASSWORD=$MAIL_PASSWORD" >> .env
+  - echo "MAIL_ENCRYPTION=$MAIL_ENCRYPTION" >> .env
+  - echo "MAIL_FROM_ADDRESS=$MAIL_FROM_ADDRESS" >> .env
+  - echo "MAIL_FROM_NAME=$MAIL_FROM_NAME" >> .env
   - php artisan config:clear
   - php artisan cache:clear
 
 test:
   stage: test
   script:
+    - echo "MAIL_MAILER=$MAIL_MAILER"
+    - echo "MAIL_HOST=$MAIL_HOST"
+    - echo "MAIL_PORT=$MAIL_PORT"
+    - echo "MAIL_USERNAME=$MAIL_USERNAME"
+    - echo "MAIL_PASSWORD=$MAIL_PASSWORD"
+    - echo "MAIL_ENCRYPTION=$MAIL_ENCRYPTION"
+    - echo "MAIL_FROM_ADDRESS=$MAIL_FROM_ADDRESS"
+    - echo "MAIL_FROM_NAME=$MAIL_FROM_NAME"
     - vendor/bin/phpunit --testdox
   artifacts:
     reports:

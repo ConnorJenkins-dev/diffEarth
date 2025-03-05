@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
 
 /*
@@ -40,3 +41,16 @@ Route::get('/columns/{columnId}/datapoints', [App\Http\Controllers\GraphDataCont
     -> name('datapoints.index');
 
 Route::get('/columns/{columnId}/data+stamp', [App\Http\Controllers\GraphDataController::class, 'getDataAndTimestamp']);
+
+Route::get('/dataset', [App\Http\Controllers\GraphDataController::class, 'getAllDatasets'])
+    -> name('datasets.index');
+
+Route::get('/dataset/{datasetId}/columns', [App\Http\Controllers\GraphDataController::class, 'getAllColumns'])
+    -> name('columns.index');
+
+Route::get('/columns/{columnId}/datapoints', [App\Http\Controllers\GraphDataController::class, 'getDataPoints'])
+    -> name('datapoints.index');
+
+Route::get('/columns/{columnId}/data+stamp', [App\Http\Controllers\GraphDataController::class, 'getDataAndTimestamp']);
+
+Route::post('/send-email', [EmailController::class, 'sendEmail']);
