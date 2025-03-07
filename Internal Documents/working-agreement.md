@@ -5,7 +5,7 @@
 Write your working hours/days and initials to sign the working agreement.
 
 Fergus
-* 1:00pm-8:00pm Mon-Fri (On days with lectures, it will be 9:00am-5:00pm)
+* 2:00pm-9:00pm Mon-Fri. May shift earlier if I'm not at work in the morning.
 * FL
 
 Cole
