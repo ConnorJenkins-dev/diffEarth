@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
 
@@ -29,6 +30,12 @@ Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::get('/has-role/{role}', [AuthController::class, 'hasRole']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::get('/dataset', [App\Http\Controllers\GraphDataController::class, 'getAllDatasets'])
