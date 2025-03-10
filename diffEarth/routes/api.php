@@ -27,6 +27,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store'])
     ->name('upload.store');
 
+Route::get('/biographyText/{id}', [App\Http\Controllers\AboutUsController::class, 'index'])
+    ->name('biographyText.index');
+
+Route::post('/biographyText/{id}', [App\Http\Controllers\AboutUsController::class, 'store'])
+    ->name('biographyText.store');
+
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
 });

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Header from "./Header.vue";
 import AboutCard from "./AboutCard.vue";
+import AboutBio from "./AboutBio.vue";
 </script>
 
 <template>
@@ -28,25 +29,7 @@ import AboutCard from "./AboutCard.vue";
             </div>
         </section>
         <aside class="w-2/5 ml-5">
-            <div class="flex flex-col items-center justify-center rounded-sm">
-                <img
-                    id="image"
-                    src="https://placehold.co/600x400"
-                    class="my-3 shadow rounded-sm"
-                />
-                <img
-                    src="https://placehold.co/600x400"
-                    class="my-3 shadow rounded-sm"
-                />
-                <img
-                    src="https://placehold.co/600x400"
-                    class="my-3 shadow rounded-sm"
-                />
-                <img
-                    src="https://placehold.co/600x400"
-                    class="my-3 shadow rounded-sm"
-                />
-            </div>
+            <AboutBio />
         </aside>
     </div>
 </template>

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Collaborator;
 use App\Models\Column;
 use App\Models\Datapoint;
 use App\Models\Dataset;
@@ -43,5 +44,6 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+        Collaborator::factory()->create();
     }
 }

@@ -8,7 +8,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/", redirect: "/dashboard" },
     { path: "/home", redirect: "/dashboard" },
     { path: "/dashboard", component: UserDashboard },
-    { path: "/about", component: AboutUs },
+    { path: "/about/:id", component: AboutUs },
+    { path: "/about", redirect: "/about/1" },
     { path: "/map", component: MapPage },
     { path: "/:catchAll(.*)", component: PageNotFound },
 ];
