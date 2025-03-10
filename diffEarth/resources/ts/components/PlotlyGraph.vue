@@ -1,16 +1,129 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { VuePlotly } from "@clalarco/vue3-plotly";
+import { Datatrace, addDataTrace } from "../datatrace.js";
 
 // toggle elements when clicked
 const filter = ref(false);
+
+const importDataTog = ref(false);
+
+const datasetTog = ref(false);
+
+const showCategory = ref(false);
+
+const graphType = ref("scatter");
+
+const catLoad = ref(false);
+
+const datasetLoad = ref(false);
 
 //toggle filter element
 function toggleFilter() {
     filter.value = !filter.value;
 }
 
-const graphType = ref("scatter");
+function toggleDataset() {
+    datasetTog.value = !datasetTog.value;
+}
+
+function toggleDataImport() {
+    importDataTog.value = !importDataTog.value;
+}
+
+// Chart data management:
+// Import data, select dataset
+async function importData() {
+    datasetLoad.value = true;
+
+    importDataTog.value = !importDataTog.value;
+    const datasets = await fetchDatasets();
+    selectDataset.value = datasets.map((item) => ({
+        id: item.id,
+        dataset_name: item.dataset_name,
+    }));
+
+    datasetLoad.value = false;
+}
+
+// Fetch categories from selected dataset
+async function getCategories(id: number) {
+    // set div visibility
+    showCategory.value = true;
+    // Set category lading to true
+    catLoad.value = true;
+
+    const categories = await fetchCategories(id);
+    selectCategory.value = categories.map((item) => ({
+        id: item.id,
+        category: item.column_name,
+    }));
+
+    catLoad.value = false;
+}
+
+// Fetch category data and timestamps
+async function getCategoryData(id: number) {
+    // reset chartData to be empty
+    chartData.value = [];
+
+    const data = await fetchPlots(id);
+    const xAxis = [];
+    const yAxis = [];
+
+    data.forEach((item) => {
+        xAxis.push(item.timestamp);
+        yAxis.push(item.data);
+    });
+
+    // chartData.value = [singleTrack];
+    const trace: Datatrace = addDataTrace(
+        xAxis,
+        yAxis,
+        graphType.value,
+        "MyChart",
+    );
+    chartData.value = [trace];
+}
+
+async function fetchPlots(id: number) {
+    return fetch(`/api/columns/${id}/data+stamp`)
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+// Fetch list of all datasets
+async function fetchDatasets() {
+    return fetch("/api/dataset")
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+// Fetch list of all categories
+async function fetchCategories(id: number) {
+    return fetch(`/api/dataset/${id}/columns`)
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+// Chart array variables
+const selectDataset = ref([]);
+const selectCategory = ref([]);
 
 // Plotly template taken from: https://plotly.com/javascript/line-charts/
 
@@ -32,25 +145,13 @@ const config = {
     responsive: true,
 };
 
-// Main graph data:
-const data = computed(() => [
-    {
-        x: [1, 2, 3, 4, 5, 6],
-        y: [10, 15, 13, 17, 10, 9],
-        type: graphType.value,
-        name: "TestTrace",
-    },
-    {
-        x: [1, 2, 3, 4, 5, 9],
-        y: [10, 15, 13, 17, 5, 12],
-        type: graphType.value,
-        name: "TestTrace2",
-    },
-]);
+const chartData = ref(<Datatrace[]>[]);
 </script>
 
 <template>
-    <div class="flex justify-center rounded m-3 shadow shrink grow max-w-250">
+    <div
+        class="flex flex-col justify-center rounded m-3 shadow shrink grow max-w-250"
+    >
         <section class="shadow rounded flex flex-col w-full">
             <nav
                 class="rounded-t-l flex flex-wrap flex-auto justify-between bg-gray-200"
@@ -135,7 +236,11 @@ const data = computed(() => [
                 <div
                     class="border-b-green-400 m-1 rounded shadow bg-white flex flex-row items-center"
                 >
-                    <button class="m-1" aria-label="Import data from database">
+                    <button
+                        class="m-1"
+                        aria-label="Import data from database"
+                        @click="importData"
+                    >
                         <i class="pi pi-database"></i>
                     </button>
                     <i class="pi pi-angle-right"></i>
@@ -160,14 +265,98 @@ const data = computed(() => [
             </div>
             <div class="flex justify-center rounded shrink w-full">
                 <VuePlotly
-                    :data="data"
+                    :data="chartData"
                     :layout="layout"
                     :config="config"
                     class="flex shrink w-full"
                 ></VuePlotly>
             </div>
         </section>
+
+        <transition name="modal">
+            <div
+                v-if="importDataTog"
+                class="fixed inset-0 bg-gray-800/50 flex flex-row items-center justify-center rounded"
+            >
+                <div class="rounded bg-gray-50">
+                    <div id="close" class="flex items-center justify-end m-1">
+                        <button
+                            class="border rounded bg-red-400"
+                            aria-label="Close"
+                            @click="toggleDataImport"
+                        >
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                    <div id="dataset" class="p-4 shadow-md bg-gray-50">
+                        <div
+                            v-if="datasetLoad"
+                            class="flex flex-row items-center justify-center m-3"
+                        >
+                            <p>Loading...</p>
+                            <br />
+                            <i class="pi pi-hourglass"></i>
+                        </div>
+                        <ul class="space-y-2">
+                            <li
+                                v-for="dataset in selectDataset"
+                                :key="dataset.id"
+                            >
+                                <button
+                                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+                                    aria-label="Select dataset"
+                                    @click="getCategories(dataset.id)"
+                                >
+                                    {{ dataset.dataset_name }}
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div
+                        v-if="showCategory"
+                        id="category"
+                        class="mt-4 p-4 rounded-lg bg-gray-50"
+                    >
+                        <div
+                            v-if="catLoad"
+                            class="flex flex-row items-center justify-center m-3"
+                        >
+                            <p>Loading...</p>
+                            <br />
+                            <i class="pi pi-hourglass"></i>
+                        </div>
+                        <ul class="space-y-2">
+                            <li
+                                v-for="category in selectCategory"
+                                :key="category.id"
+                            >
+                                <button
+                                    class="w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition"
+                                    aria-label="Select category"
+                                    @click="getCategoryData(category.id)"
+                                >
+                                    {{ category.category }}
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+    transition: opacity 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+    opacity: 0;
+}
+.modal-enter-to,
+.modal-leave-from {
+    opacity: 1;
+}
+</style>

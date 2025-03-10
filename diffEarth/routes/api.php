@@ -29,3 +29,14 @@ Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
 });
+
+Route::get('/dataset', [App\Http\Controllers\GraphDataController::class, 'getAllDatasets'])
+    -> name('datasets.index');
+
+Route::get('/dataset/{datasetId}/columns', [App\Http\Controllers\GraphDataController::class, 'getAllColumns'])
+    -> name('columns.index');
+
+Route::get('/columns/{columnId}/datapoints', [App\Http\Controllers\GraphDataController::class, 'getDataPoints'])
+    -> name('datapoints.index');
+
+Route::get('/columns/{columnId}/data+stamp', [App\Http\Controllers\GraphDataController::class, 'getDataAndTimestamp']);
