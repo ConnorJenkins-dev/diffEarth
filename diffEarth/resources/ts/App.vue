@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import UserDashboard from "./components/UserDashboard.vue";
 import Toast from "./components/Toast.vue";
+defineOptions({
+    name: "App",
+});
 </script>
 
 <template>
     <Toast />
     <div>
-        <UserDashboard />
+        <router-view></router-view>
     </div>
 </template>
