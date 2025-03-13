@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\Models\Alert;
@@ -15,13 +16,18 @@ class EmailController extends Controller
     {
         // Ensure JSON responses for validation errors
         if ($request->expectsJson()) {
-            \Illuminate\Support\Facades\Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'location' => 'required|string',
                 'column' => 'required|string',
                 'threshold' => 'required|numeric',
                 'emails' => 'required|array',
                 'emails.*' => 'email',
-            ])->validate();
+            ]);
+
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
         }
 
         // Create the alert record in the database
