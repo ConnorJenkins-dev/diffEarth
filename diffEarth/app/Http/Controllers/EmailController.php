@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log; // Import Log facade
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\Models\Alert;
-
-// Add the Alert model
 
 class EmailController extends Controller
 {
@@ -24,7 +23,6 @@ class EmailController extends Controller
                 'emails.*' => 'email',
             ]);
 
-
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
@@ -38,7 +36,7 @@ class EmailController extends Controller
             'emaillist' => json_encode($request->emails),
         ]);
 
-        // Now proceed with the email sending process
+        // Load PHPMailer
         require base_path('vendor/autoload.php');
 
         foreach ($request->emails as $email) {
@@ -72,8 +70,11 @@ class EmailController extends Controller
                 $mail->AltBody = "Alert for {$request->location}. Column: {$request->column}.
                 Threshold exceeded: {$request->threshold}";
 
+                // Send email
                 $mail->send();
             } catch (Exception $e) {
+                // Log error details
+                Log::error("Mailer Error: {$mail->ErrorInfo}"); // Log mail error
                 return response()->
                 json(['message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"], 500);
             }
