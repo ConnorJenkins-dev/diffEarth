@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use App\Models\Alert;
+
+// Add the Alert model
 
 class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {
+        // Validate the request
         $request->validate([
             'location' => 'required|string',
             'column' => 'required|string',
@@ -18,6 +22,15 @@ class EmailController extends Controller
             'emails.*' => 'email',
         ]);
 
+        // Create the alert record in the database
+        $alert = Alert::create([
+            'location' => $request->location,
+            'column' => $request->column,
+            'threshold' => $request->threshold,
+            'emaillist' => json_encode($request->emails), // Convert the email array to a JSON string
+        ]);
+
+        // Now proceed with the email sending process
         require base_path('vendor/autoload.php');
 
         foreach ($request->emails as $email) {
@@ -42,19 +55,22 @@ class EmailController extends Controller
                 $mail->Subject = 'Threshold Alert';
                 $mail->Body = "<p>Hello, </p>
                                <p>You have been selected to track <b>{$request->location}</b></p>
-                               <p>Monitoring for when <b>{$request->column}</b> exceeds the threshold <b>{$request->threshold}</b></p>
+                               <p>Monitoring for when <b>{$request->column}</b> exceeds the threshold <b>
+                               {$request->threshold}</b></p>
                                <p>You will be notified by this email when that happens</p>
                                <p>Kind regards,</p>
                                <p>Chil mailing service </p>";
 
-                $mail->AltBody = "Alert for {$request->location}. Column: {$request->column}. Threshold exceeded: {$request->threshold}";
+                $mail->AltBody = "Alert for {$request->location}. Column: {$request->column}.
+                Threshold exceeded: {$request->threshold}";
 
                 $mail->send();
             } catch (Exception $e) {
-                return response()->json(['message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"], 500);
+                return response()->
+                json(['message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"], 500);
             }
         }
 
-        return response()->json(['message' => 'Emails sent successfully!']);
+        return response()->json(['message' => 'Emails sent and alert saved successfully!']);
     }
 }

@@ -46,9 +46,7 @@ import EmailForm from "./EmailForm.vue";
                 <PlotlyGraph />
             </section>
         </section>
-        <div>
-            <EmailForm/>
-        </div>
+
         <aside
             class="w-3/10 m-1 border-2 border-[var(--darkBlue)] bg-[var(--greyBlueAlt)] rounded-lg shadow-lg p-4 flex flex-col items-center"
         >
@@ -80,6 +78,14 @@ import EmailForm from "./EmailForm.vue";
                         </p>
                     </li>
                 </ul>
+            </section>
+            <section
+                id="email"
+                class="border-4 border-[var(--darkBlue)] w-full rounded-md p-4 bg-white"
+            >
+                <div class="flex justify-center">
+                    <EmailForm />
+                </div>
             </section>
         </aside>
     </body>
