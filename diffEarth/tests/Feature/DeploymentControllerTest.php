@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Deployment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class DeploymentControllerTest extends TestCase
@@ -16,9 +17,10 @@ class DeploymentControllerTest extends TestCase
      */
     public function test_create_new_deployment()
     {
+        $uid = (string) Str::uuid();
         // Send POST request to create a deployment
         $response = $this->postJson('/api/deployments', [
-            'uid' => 'cf240003',
+            'uid' => $uid,
             'name' => 'New Deployment',
             'latitude' => 72.0,
             'longitude' => -40.0,
@@ -30,7 +32,7 @@ class DeploymentControllerTest extends TestCase
             ->assertJson([
                 'message' => 'Deployment added successfully.',
                 'data' => [
-                    'uid' => 'cf240003',
+                    'uid' => $uid,
                     'name' => 'New Deployment',
                     'latitude' => 72.0,
                     'longitude' => -40.0,
@@ -40,7 +42,7 @@ class DeploymentControllerTest extends TestCase
 
         // Verify the deployment exists in the database
         $this->assertDatabaseHas('deployments', [
-            'uid' => 'cf240003',
+            'uid' => $uid,
             'name' => 'New Deployment',
         ]);
     }
@@ -60,7 +62,7 @@ class DeploymentControllerTest extends TestCase
 
         // Assert validation errors
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['uid', 'latitude', 'longitude']);
+            ->assertJsonValidationErrors(['latitude', 'longitude']);
     }
 
     /**
@@ -68,9 +70,10 @@ class DeploymentControllerTest extends TestCase
      */
     public function test_fetch_specific_deployment()
     {
+        $uid = (string) Str::uuid();
         // Create a test deployment
         $deployment = Deployment::factory()->create([
-            'uid' => 'cf240004',
+            'uid' => $uid,
             'name' => 'Test Deployment',
             'latitude' => 60.0,
             'longitude' => -150.0,
@@ -92,7 +95,7 @@ class DeploymentControllerTest extends TestCase
                 'updated_at',
             ])
             ->assertJsonFragment([
-                'uid' => 'cf240004',
+                'uid' => $uid,
                 'name' => 'Test Deployment',
                 'latitude' => 60.0,
                 'longitude' => -150.0,
@@ -111,6 +114,123 @@ class DeploymentControllerTest extends TestCase
         $response->assertStatus(404)
             ->assertJson([
                 'message' => 'No query results for model [App\\Models\\Deployment] 9999',
+            ]);
+    }
+
+    /**
+     * Test fetching all deployments.
+     */
+    public function test_index_returns_all_deployments()
+    {
+        Deployment::factory()->count(3)->create();
+
+        $response = $this->getJson('/api/deployments');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(3);
+    }
+
+    /**
+     * Test deleting a deployment.
+     */
+    public function test_destroy_deletes_a_deployment()
+    {
+        $deployment = Deployment::factory()->create();
+
+        $response = $this->deleteJson("/api/deployments/{$deployment->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Deployment deleted.'
+            ]);
+
+        $this->assertDatabaseMissing('deployments', [
+            'id' => $deployment->id
+        ]);
+    }
+
+    /**
+     * Test fetching the in-progress deployment (success).
+     */
+    public function test_in_progress_index_returns_data_if_exists()
+    {
+        \App\Models\DeploymentInProgress::create([
+            'id' => 1,
+            'name' => 'Test In Progress',
+            'info' => 'Test info',
+            'layout' => json_encode([
+                ['x' => 0, 'y' => 0, 'w' => 2, 'h' => 2, 'i' => 'graph_0', 'itemData' => []]
+            ])
+        ]);
+
+        // Double check it’s in the database
+        $this->assertDatabaseHas('deployments_in_progress', [
+            'id' => 1,
+            'name' => 'Test In Progress'
+        ]);
+
+        // Now try to retrieve
+        $response = $this->getJson('/api/deployments/in-progress');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['name' => 'Test In Progress']);
+    }
+
+    /**
+     * Test fetching the in-progress deployment (404).
+     */
+    public function test_in_progress_index_returns_404_if_not_exists()
+    {
+        $response = $this->getJson('/api/deployments/in-progress');
+
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Test storing/updating in-progress deployment.
+     */
+    public function test_in_progress_store_creates_or_updates_deployment()
+    {
+        $layout = [['x' => 0, 'y' => 0, 'w' => 2, 'h' => 2, 'i' => 'graph_0', 'itemData' => []]];
+
+        $response = $this->postJson('/api/deployments/in-progress', [
+            'id' => 1,
+            'name' => 'Untitled Dashboard',
+            'layout' => $layout,
+            'info' => 'Updated info'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Layout saved successfully!'
+            ]);
+
+        $this->assertDatabaseHas('deployments_in_progress', [
+            'id' => 1,
+            'info' => 'Updated info'
+        ]);
+    }
+
+    /**
+     * Test fetching deployment by UUID.
+     */
+    public function test_show_by_uuid_returns_correct_data()
+    {
+        $deployment = Deployment::factory()->create([
+            'uid' => 'abc123',
+            'name' => 'UUID Test',
+            'layout' => [['i' => 'graph_0']],
+            'info' => 'Extra info',
+            'description' => 'Desc'
+        ]);
+
+        $response = $this->getJson('/api/dashboard/abc123');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'name' => 'UUID Test',
+                'info' => 'Extra info',
+                'description' => 'Desc',
             ]);
     }
 }

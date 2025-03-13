@@ -10,90 +10,83 @@ const globeDiv = ref(null);
 const myGlobe = ref(null);
 const markers = ref([]);
 
-// Function to prevent page scroll when interacting with the globe
+const emit = defineEmits(["deploymentClick"]);
+
 const preventScroll = (event) => {
     event.preventDefault();
 };
 
-// Fetch deployments from the API using fetch
 async function fetchDeployments() {
     try {
         const response = await fetch("/api/deployments");
-        if (!response.ok) {
-            throw new Error(
-                `Error fetching deployments: ${response.statusText}`,
-            );
-        }
+        if (!response.ok) throw new Error("Failed to fetch deployments");
         const data = await response.json();
+
         markers.value = data.map((deployment) => ({
             lat: deployment.latitude,
             lng: deployment.longitude,
             size: 0.01,
             id: deployment.id,
+            uid: deployment.uid,
+            name: deployment.name,
         }));
 
         if (myGlobe.value) {
-            myGlobe.value.pointsData(markers.value); // Update markers on the globe
+            myGlobe.value.pointsData(markers.value);
         }
     } catch (error) {
         console.error("Error fetching deployments:", error.message);
     }
 }
 
-// Mounting logic
 onMounted(async () => {
     if (!globeDiv.value) return;
 
-    // Prevent page scroll when interacting with the globe
     globeDiv.value.addEventListener("wheel", preventScroll, { passive: false });
     globeDiv.value.addEventListener("mousedown", (event) => {
-        // Prevent middle mouse button scrolling
         if (event.button === 1) event.preventDefault();
     });
 
-    // Initialize the globe
     myGlobe.value = Globe()(globeDiv.value)
         .globeTileEngineUrl(
             (x, y, l) => `https://tile.openstreetmap.org/${l}/${x}/${y}.png`,
         )
         .backgroundImageUrl("/white.png")
-        .pointsData(markers.value) // Add markers dynamically
-        .pointAltitude(0.02) // Raise markers slightly above the globe
-        .pointColor(() => "rgba(15,12,167,0.85)") // Red color with some opacity
+        .pointsData(markers.value)
+        .pointAltitude(0.02)
+        .pointColor(() => "rgba(15,12,167,0.85)")
         .onPointClick((point) => {
-            // Zoom in on the clicked marker
+            if (point.uid) emit("deploymentClick", point.uid);
             myGlobe.value.pointOfView(
                 { lat: point.lat, lng: point.lng, altitude: 0.7 },
-                2000, // Transition duration in milliseconds
+                2000,
             );
-
-            // Stop autorotation
             myGlobe.value.controls().autoRotate = false;
-        });
-    // Enable globe autorotation initially
+        })
+        .onPointHover((point) => {
+            myGlobe.value.pointAltitude((p) => (p === point ? 0.12 : 0.02));
+        })
+        .pointLabel((d) => d.name); // Tooltip label
+
     myGlobe.value.controls().autoRotate = true;
     myGlobe.value.controls().autoRotateSpeed = 0.5;
 
-    // Fetch initial deployments
     await fetchDeployments();
 
-    // Cleanup listener on unmount
     onUnmounted(() => {
         globeDiv.value.removeEventListener("wheel", preventScroll);
     });
 });
 
-// Function to add a new marker dynamically
 function addMarker(lat, lng, id) {
-    markers.value.push({ lat, lng, size: 0.001, id });
+    markers.value.push({ lat, lng, size: 0.01, id });
     if (myGlobe.value) {
-        myGlobe.value.pointsData(markers.value); // Update markers on the globe
+        myGlobe.value.pointsData(markers.value);
     }
 }
 
-// Expose methods for external updates
 defineExpose({
-    myGlobe, // Expose the globe instance
+    myGlobe,
     updateMarkers: (newDeployment) => {
         addMarker(
             newDeployment.latitude,

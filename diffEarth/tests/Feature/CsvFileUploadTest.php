@@ -54,8 +54,8 @@ class CsvFileUploadTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'File uploaded successfully and is being processed in the background.'
-                    . ' Check back in a few minutes.'
+                'message' => 'File uploaded successfully and is being processed. ' .
+                'Please do not leave this page until it appears in the table.'
             ]);
 
         Bus::assertDispatched(ProcessCsvJob::class, function (ProcessCsvJob $job) use ($file) {

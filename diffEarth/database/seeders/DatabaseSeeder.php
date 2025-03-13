@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Column;
 use App\Models\Datapoint;
 use App\Models\Dataset;
+use App\Models\DeploymentInProgress;
 use App\Models\Row;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         Column::factory()->count(5)->create([
             'dataset_id' => 2,
         ]);
+        DeploymentInProgress::factory()->create();
         for ($row = 1; $row <= 5; $row++) {
             for ($col = 1; $col <= 5; $col++) {
                 Datapoint::factory()->create([

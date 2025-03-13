@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\CsvUploaded;
 use Carbon\Carbon;
 use App\Models\Row;
 use App\Models\Column;
@@ -129,6 +130,7 @@ class ProcessCsvJob implements ShouldQueue
 
             fclose($handle);
             DB::commit();
+            broadcast(new CsvUploaded($dataset));
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);

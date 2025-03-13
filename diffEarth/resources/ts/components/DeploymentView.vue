@@ -43,7 +43,6 @@
                 :key="deployment.id"
                 class="p-4 bg-indigo-100 border border-indigo-300 rounded-lg shadow-sm flex items-center justify-between"
             >
-                <!-- Limited Details -->
                 <div>
                     <h2 class="text-lg font-medium text-indigo-800">
                         {{ deployment.name }}
@@ -54,12 +53,20 @@
                 </div>
 
                 <!-- Go to Location Button -->
-                <button
-                    @click="goToLocation(deployment)"
-                    class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                    Go to Location
-                </button>
+                <div class="flex flex-col items-end space-y-2">
+                    <button
+                        @click="goToLocation(deployment)"
+                        class="bg-indigo-600 text-white px-4 py-1 rounded-md hover:bg-indigo-700"
+                    >
+                        Go to Location
+                    </button>
+                    <button
+                        @click="deleteDeployment(deployment)"
+                        class="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                    >
+                        Delete
+                    </button>
+                </div>
             </div>
 
             <!-- No Results Message -->
@@ -88,6 +95,9 @@ const props = defineProps({
 const deployments = ref([]);
 const searchQuery = ref("");
 const sortOrder = ref("asc");
+
+import { useToast } from "../composables/useToast.ts";
+const { showToast } = useToast();
 
 // Fetch deployments from the API using fetch
 async function fetchDeployments() {
@@ -145,7 +155,7 @@ function goToLocation(deployment) {
         typeof props.globeRef.myGlobe.pointOfView === "function"
     ) {
         props.globeRef.myGlobe.pointOfView(
-            { lat: latitude, lng: longitude, altitude: 0.2 },
+            { lat: latitude - 1.5, lng: longitude + 1.5, altitude: 0.6 },
             2000, // Transition duration in milliseconds
         );
     } else {
@@ -160,6 +170,41 @@ function goToLocation(deployment) {
         props.globeRef.myGlobe.controls().autoRotate = false;
     } else {
         console.warn("Controls method not available in current mode.");
+    }
+}
+
+async function deleteDeployment(deployment) {
+    const confirmDelete = window.confirm(
+        `Are you sure you want to delete "${deployment.name}"?`,
+    );
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch(`/api/deployments/${deployment.id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete deployment");
+        }
+
+        // Remove it from the list
+        deployments.value = deployments.value.filter(
+            (d) => d.id !== deployment.id,
+        );
+
+        // Update globe markers
+        if (props.globeRef?.myGlobe) {
+            const updatedMarkers = props.globeRef.myGlobe
+                .pointsData()
+                .filter((p) => p.id !== deployment.id);
+            props.globeRef.myGlobe.pointsData(updatedMarkers);
+        }
+
+        showToast("Deployment deleted successfully.");
+    } catch (error) {
+        console.error("Error deleting deployment:", error.message);
+        showToast("Failed to delete deployment.", "error");
     }
 }
 

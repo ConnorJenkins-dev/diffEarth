@@ -26,8 +26,14 @@ use App\Http\Controllers\DeploymentController;
 // route for rendering datasets
 Route::get('/datasets', [DatasetController::class, 'index']);
 
-// route for adding deployments
-Route::apiResource('deployments', DeploymentController::class);
+Route::get('/deployments/in-progress', [App\Http\Controllers\DeploymentController::class, 'inProgressIndex'])
+    ->name('deployments.in-progress-index');
+Route::post('/deployments/in-progress', [App\Http\Controllers\DeploymentController::class, 'inProgressStore'])
+    ->name('deployments.in-progress-store');
+Route::get('/deployments', [DeploymentController::class, 'index']);
+Route::get('/deployments/{id}', [DeploymentController::class, 'show']);
+Route::post('/deployments', [DeploymentController::class, 'store']);
+Route::delete('/deployments/{id}', [DeploymentController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -37,6 +43,11 @@ Route::middleware('auth:sanctum')->get('/user/roles', [UserController::class, 'g
 
 Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store'])
     ->name('upload.store');
+
+Route::get('/dashboard/{uid}', [DeploymentController::class, 'showByUuid'])
+    ->name('deployments.show-by-uuid');
+
+
 
 Route::get('/biographyText/{id}', [App\Http\Controllers\AboutUsController::class, 'index'])
     ->name('biographyText.index');

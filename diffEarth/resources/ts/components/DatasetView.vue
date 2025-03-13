@@ -1,12 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import axios from "axios";
 
 import { useTranslation } from "../composables/useTranslation";
 
 const { t } = useTranslation();
+
+const props = defineProps<{
+    editMode: boolean;
+    dashboardData: { datasetIds: number[] }[];
+}>();
+
+const emit = defineEmits<{
+    (e: "datasetDeleted", value: { datasetIds: number[] }[]): void;
+}>();
+
 // Interface representing a single dataset object
 interface Dataset {
+    id: number;
     dataset_name: string;
     updated_at: string;
     created_at: string;
@@ -32,6 +43,16 @@ const pagination = ref<Pagination>({
 
 // Loading status
 const loading = ref(true);
+const datasetsToLoad = ref(props.dashboardData[0]?.datasetIds ?? []);
+
+watch(
+    () => props.dashboardData.map((d) => [...d.datasetIds]), // watch for datasetIds change
+    async () => {
+        datasetsToLoad.value = props.dashboardData[0]?.datasetIds ?? [];
+        await fetchDatasets();
+    },
+    { deep: true },
+);
 
 // Function to fetch datasets from the API
 const fetchDatasets = async (url: string = "/api/datasets") => {
@@ -46,6 +67,9 @@ const fetchDatasets = async (url: string = "/api/datasets") => {
             next_page_url: response.data.next_page_url, // Set next page URL
             prev_page_url: response.data.prev_page_url, // Set previous page URL
         };
+        datasets.value = datasets.value.filter((ds) =>
+            datasetsToLoad.value.includes(ds.id),
+        );
     } catch (error) {
         console.error("Error fetching datasets:", error);
     } finally {
@@ -69,10 +93,11 @@ const filteredOrTruncatedDatasets = computed(() => {
     );
 });
 
-// Function to handle dataset selection change
-const onDatasetChange = () => {
-    // Log the selected dataset
-    console.log("Selected Dataset:", selectedDataset.value);
+const deleteDataset = (datasetToDelete: Dataset) => {
+    const current = props.dashboardData[0]?.datasetIds || [];
+    const updated = current.filter((id) => id !== datasetToDelete.id);
+
+    emit("datasetDeleted", [{ datasetIds: updated }]);
 };
 
 // Fetch datasets when the component is mounted
@@ -82,136 +107,117 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="p-4 transform scale-88 origin-top-left">
-        <div v-if="loading" class="text-center py-4 text-gray-600 font-medium">
-            {{ t.loading }}
+    <div class="flex flex-col h-full w-full p-4 overflow-hidden">
+        <!-- Top controls -->
+        <div class="mb-4">
+            <label
+                for="dataset-select"
+                class="mr-2 font-medium text-gray-700"
+                >{{ t.selectDataset }}</label
+            >
+            <select
+                id="dataset-select"
+                v-model="selectedDataset"
+                class="border border-gray-300 rounded-md px-3 py-2 text-gray-700"
+            >
+                <option value="">{{ t.showAllDatasets }}</option>
+                <option
+                    v-for="option in datasets"
+                    :key="option.dataset_name"
+                    :value="option.dataset_name"
+                >
+                    {{ option.dataset_name }}
+                </option>
+            </select>
         </div>
-        <div v-else>
-            <!-- Dropdown for Dataset Selection -->
-            <div class="mb-4">
-                <label
-                    for="dataset-select"
-                    class="block mb-1 text-gray-700 font-medium"
-                >
-                    {{ t.selectDataset }}
-                </label>
-                <select
-                    id="dataset-select"
-                    v-model="selectedDataset"
-                    class="block w-full md:max-w-sm border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-blue-400 shadow-sm transition"
-                    @change="onDatasetChange"
-                >
-                    <!-- Default Option -->
-                    <option value="" selected>{{ t.showAllDatasets }}</option>
-                    <!-- Loop through Dataset Options -->
-                    <option
-                        v-for="option in datasets"
-                        :key="option.dataset_name"
-                        :value="option.dataset_name"
-                    >
-                        {{ option.dataset_name }}
-                    </option>
-                </select>
-            </div>
 
-            <!-- Responsive Data Table -->
-            <div class="overflow-x-auto">
-                <table>
-                    <thead
-                        class="bg-gray-100 text-gray-700 text-xs uppercase font-medium"
-                    >
-                        <tr>
-                            <th
-                                class="border border-gray-200 px-3 py-2 text-left max-w-[150px] truncate"
-                            >
-                                {{ t.name }}
-                            </th>
-                            <th
-                                class="border border-gray-200 px-3 py-2 text-left max-w-[250px] truncate"
-                            >
-                                {{ t.description }}
-                            </th>
-                            <th
-                                class="border border-gray-200 px-3 py-2 text-center w-[120px]"
-                            >
-                                {{ t.lastUpdated }}
-                            </th>
-                            <th
-                                class="border border-gray-200 px-3 py-2 text-center w-[120px]"
-                            >
-                                {{ t.createdAt }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="dataset in filteredOrTruncatedDatasets"
-                            :key="dataset.dataset_name"
-                            class="hover:bg-gray-50 text-gray-600"
+        <!-- Scrollable Table Container -->
+        <div
+            class="flex-1 min-h-0 overflow-y-auto overflow-x-auto border rounded"
+        >
+            <table class="w-full table-fixed text-sm">
+                <thead
+                    class="bg-gray-100 text-gray-700 uppercase font-medium sticky top-0"
+                >
+                    <tr>
+                        <th
+                            class="w-4/10 border border-gray-200 px-3 py-2 text-left truncate"
                         >
-                            <td
-                                class="border border-gray-200 px-3 py-2 text-left truncate max-w-[120px]"
-                                :title="dataset.dataset_name"
-                            >
-                                {{ dataset.dataset_name }}
-                            </td>
-                            <td
-                                class="border border-gray-200 px-3 py-2 text-left truncate max-w-[250px]"
-                                :title="dataset.metadata"
-                            >
-                                {{ dataset.metadata }}
-                            </td>
-                            <td
-                                class="border border-gray-200 px-3 py-2 text-center"
-                            >
-                                {{
-                                    new Date(
-                                        dataset.updated_at,
-                                    ).toLocaleDateString()
-                                }}
-                            </td>
-                            <td
-                                class="border border-gray-200 px-3 py-2 text-center"
-                            >
-                                {{
-                                    new Date(
-                                        dataset.created_at,
-                                    ).toLocaleDateString()
-                                }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Pagination -->
-            <div class="mt-4 flex justify-between items-center">
-                <button
-                    :disabled="!pagination.prev_page_url"
-                    class="px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                    @click="
-                        pagination.prev_page_url &&
-                        fetchDatasets(pagination.prev_page_url)
-                    "
-                >
-                    {{ t.previous }}
-                </button>
+                            {{ t.name }}
+                        </th>
+                        <th
+                            class="w-5/10 border border-gray-200 px-3 py-2 text-left truncate"
+                        >
+                            {{ t.description }}
+                        </th>
+                        <th
+                            v-if="editMode"
+                            class="w-1/10 border border-gray-200 px-3 py-2 text-left truncate"
+                        >
+                            X
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="dataset in filteredOrTruncatedDatasets"
+                        :key="dataset.dataset_name"
+                        class="hover:bg-gray-50 text-gray-600"
+                    >
+                        <td
+                            class="border border-gray-200 px-3 py-2 truncate"
+                            :title="dataset.dataset_name"
+                        >
+                            {{ dataset.dataset_name }}
+                        </td>
+                        <td
+                            class="border border-gray-200 px-3 py-2 truncate"
+                            :title="dataset.metadata"
+                        >
+                            {{ dataset.metadata }}
+                        </td>
+                        <td
+                            v-if="editMode"
+                            class="border border-gray-200 px-3 py-2 truncate cursor-pointer"
+                        >
+                            <span
+                                class="pi pi-trash"
+                                @click="deleteDataset(dataset)"
+                            ></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <span class="text-gray-600 text-sm font-medium">
-                    {{ t.page }} {{ pagination.current_page }} {{ t.of }}
-                    {{ pagination.last_page }}
-                </span>
-
-                <button
-                    :disabled="!pagination.next_page_url"
-                    class="px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                    @click="
-                        pagination.next_page_url &&
-                        fetchDatasets(pagination.next_page_url)
-                    "
-                >
-                    {{ t.next }}
-                </button>
-            </div>
+        <!-- Pagination controls -->
+        <div
+            class="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2"
+        >
+            <button
+                :disabled="!pagination.prev_page_url"
+                class="px-3 py-2 border border-gray-300 rounded-md w-full sm:w-auto"
+                @click="
+                    pagination.prev_page_url &&
+                    fetchDatasets(pagination.prev_page_url)
+                "
+            >
+                {{ t.previous }}
+            </button>
+            <span class="text-sm text-gray-600 font-medium">
+                {{ t.page }} {{ pagination.current_page }} {{ t.of }}
+                {{ pagination.last_page }}
+            </span>
+            <button
+                :disabled="!pagination.next_page_url"
+                class="px-3 py-2 border border-gray-300 rounded-md w-full sm:w-auto"
+                @click="
+                    pagination.next_page_url &&
+                    fetchDatasets(pagination.next_page_url)
+                "
+            >
+                {{ t.next }}
+            </button>
         </div>
     </div>
 </template>

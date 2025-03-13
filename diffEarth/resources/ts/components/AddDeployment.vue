@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div class="flex flex-col w-full max-h-full overflow-auto px-4 pb-4">
         <!-- Success/Error Messages -->
         <div v-if="successMessage" class="text-green-500 mb-4">
             {{ successMessage }}
@@ -9,33 +9,10 @@
         </div>
 
         <!-- Deployment Form -->
-        <form @submit.prevent="submitDeployment" class="space-y-4">
-            <!-- UID Field -->
-            <div>
-                <label for="uid" class="block text-sm font-medium text-gray-700"
-                    >UID:</label
-                >
-                <input
-                    id="uid"
-                    v-model.trim="newDeployment.uid"
-                    type="text"
-                    required
-                    :class="[
-                        'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                        { 'border-red-500': v$.uid.$error },
-                    ]"
-                    aria-invalid="true"
-                    aria-describedby="uid-error"
-                />
-                <p
-                    v-if="v$.uid.$error"
-                    id="uid-error"
-                    class="text-xs text-red-500 mt-1"
-                >
-                    {{ v$.uid.$errors[0]?.$message }}
-                </p>
-            </div>
-
+        <form
+            @submit.prevent="submitDeployment"
+            class="space-y-4 flex flex-col flex-grow"
+        >
             <!-- Name Field -->
             <div>
                 <label
@@ -64,62 +41,65 @@
                 </p>
             </div>
 
-            <!-- Latitude Field -->
-            <div>
-                <label
-                    for="latitude"
-                    class="block text-sm font-medium text-gray-700"
-                    >Latitude:</label
-                >
-                <input
-                    id="latitude"
-                    v-model.number="newDeployment.latitude"
-                    type="number"
-                    step="any"
-                    required
-                    :class="[
-                        'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                        { 'border-red-500': v$.latitude.$error },
-                    ]"
-                    aria-invalid="true"
-                    aria-describedby="latitude-error"
-                />
-                <p
-                    v-if="v$.latitude.$error"
-                    id="latitude-error"
-                    class="text-xs text-red-500 mt-1"
-                >
-                    {{ v$.latitude.$errors[0]?.$message }}
-                </p>
-            </div>
+            <!-- Latitude and Longitude -->
+            <div class="flex flex-row items-center justify-left">
+                <!-- Latitude Field -->
+                <div>
+                    <label
+                        for="latitude"
+                        class="block text-sm font-medium text-gray-700"
+                        >Latitude:</label
+                    >
+                    <input
+                        id="latitude"
+                        v-model.number="newDeployment.latitude"
+                        type="number"
+                        step="any"
+                        required
+                        :class="[
+                            'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                            { 'border-red-500': v$.latitude.$error },
+                        ]"
+                        aria-invalid="true"
+                        aria-describedby="latitude-error"
+                    />
+                    <p
+                        v-if="v$.latitude.$error"
+                        id="latitude-error"
+                        class="text-xs text-red-500 mt-1"
+                    >
+                        {{ v$.latitude.$errors[0]?.$message }}
+                    </p>
+                </div>
 
-            <!-- Longitude Field -->
-            <div>
-                <label
-                    for="longitude"
-                    class="block text-sm font-medium text-gray-700"
-                    >Longitude:</label
-                >
-                <input
-                    id="longitude"
-                    v-model.number="newDeployment.longitude"
-                    type="number"
-                    step="any"
-                    required
-                    :class="[
-                        'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
-                        { 'border-red-500': v$.longitude.$error },
-                    ]"
-                    aria-invalid="true"
-                    aria-describedby="longitude-error"
-                />
-                <p
-                    v-if="v$.longitude.$error"
-                    id="longitude-error"
-                    class="text-xs text-red-500 mt-1"
-                >
-                    {{ v$.longitude.$errors[0]?.$message }}
-                </p>
+                <!-- Longitude Field -->
+                <div>
+                    <label
+                        for="longitude"
+                        class="block text-sm font-medium text-gray-700"
+                        >Longitude:</label
+                    >
+                    <input
+                        id="longitude"
+                        v-model.number="newDeployment.longitude"
+                        type="number"
+                        step="any"
+                        required
+                        :class="[
+                            'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                            { 'border-red-500': v$.longitude.$error },
+                        ]"
+                        aria-invalid="true"
+                        aria-describedby="longitude-error"
+                    />
+                    <p
+                        v-if="v$.longitude.$error"
+                        id="longitude-error"
+                        class="text-xs text-red-500 mt-1"
+                    >
+                        {{ v$.longitude.$errors[0]?.$message }}
+                    </p>
+                </div>
             </div>
 
             <!-- Description Field -->
@@ -129,12 +109,16 @@
                     class="block text-sm font-medium text-gray-700"
                     >Description:</label
                 >
+                <p class="text-xs text-grey">
+                    Brief description about dashboard. Will appear in the list
+                    of deployments. Separate from dashboard info.
+                </p>
                 <textarea
                     id="description"
                     v-model.trim="newDeployment.description"
                     rows="3"
                     :class="[
-                        'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                        'max-h-32 resize-y mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
                         { 'border-red-500': v$.description.$error },
                     ]"
                     aria-invalid="true"
@@ -153,7 +137,7 @@
             <button
                 type="submit"
                 :disabled="v$.$invalid"
-                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                class="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
                 Add Deployment
             </button>
@@ -161,8 +145,8 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 
@@ -175,12 +159,36 @@ const newDeployment = ref({
     description: "",
 });
 
+const props = defineProps<{
+    layout: any[];
+    info: string;
+}>();
+
+const localLayout = ref<any[]>(props.layout);
+const localInfo = ref(props.info);
+
+watch(
+    () => props.layout,
+    (newLayout) => {
+        localLayout.value = JSON.parse(JSON.stringify(newLayout)); // deep copy to avoid mutation issues
+    },
+    { immediate: true, deep: true },
+);
+
+watch(
+    () => props.info,
+    (newInfo) => {
+        console.log("AddDeployment got new info:", newInfo);
+        localInfo.value = newInfo;
+    },
+    { immediate: true },
+);
+
 // Validation rules
 const isValidNumber = (value) =>
     !isNaN(value) && value !== null && value !== "";
 
 const rules = {
-    uid: { required },
     name: { required },
     latitude: {
         required,
@@ -209,14 +217,6 @@ const rules = {
 
 const v$ = useVuelidate(rules, newDeployment);
 
-// Props to receive the globe component's reference
-const props = defineProps({
-    globeRef: {
-        type: Object,
-        required: true,
-    },
-});
-
 // State for success/error messages
 const successMessage = ref("");
 const errorMessage = ref("");
@@ -231,17 +231,23 @@ const submitDeployment = async () => {
     }
 
     try {
+        console.log("Submitting deployment with layout:", localLayout.value);
+        const clonedLayout = JSON.parse(JSON.stringify(localLayout.value));
+
+        console.log("info:", localInfo.value);
+
         const response = await fetch("/api/deployments", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                uid: newDeployment.value.uid,
                 name: newDeployment.value.name,
                 latitude: parseFloat(newDeployment.value.latitude),
                 longitude: parseFloat(newDeployment.value.longitude),
-                description: newDeployment.value.description,
+                description: props.info, // this is the "info" from the dashboard
+                info: localInfo.value,
+                layout: clonedLayout,
             }),
         });
 
@@ -252,7 +258,6 @@ const submitDeployment = async () => {
 
         // Clear the form
         newDeployment.value = {
-            uid: "",
             name: "",
             latitude: 0,
             longitude: 0,
@@ -262,6 +267,10 @@ const submitDeployment = async () => {
         // Show success message
         successMessage.value = "Deployment added successfully!";
         errorMessage.value = "";
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000); // slight delay so users see the success message
     } catch (error) {
         // Handle errors
         errorMessage.value = error.message || "An unexpected error occurred.";

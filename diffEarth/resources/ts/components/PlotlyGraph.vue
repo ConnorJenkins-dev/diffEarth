@@ -1,12 +1,25 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { VuePlotly } from "@clalarco/vue3-plotly";
+import PlotlyGraphFilters from "./PlotlyGraphFilters.vue";
 import { Datatrace, addDataTrace } from "../datatrace.js";
 import { useTranslation } from "../composables/useTranslation";
 
+const props = defineProps<{
+    editMode: boolean;
+    dashboardData: { columnId: number; traceName: string }[];
+}>();
+
+const emit = defineEmits<{
+    (
+        e: "updateDashboardData",
+        value: { columnId: number; traceName: string }[],
+    ): void;
+}>();
+
+const filter = ref(false); // Date filter
+
 const { t } = useTranslation();
-// toggle elements when clicked
-const filter = ref(false);
 
 const importDataTog = ref(false);
 
@@ -14,18 +27,45 @@ const showCategory = ref(false);
 
 const graphType = ref("markers");
 
-const catLoad = ref(false);
+const catLoading = ref(false);
 
-const datasetLoad = ref(false);
+const datasetLoading = ref(false);
 
 const traceName = ref("");
 
 const dotSize = ref(5);
 
+const graphData = ref(props.dashboardData ?? []);
+
+watch(
+    () => props.dashboardData,
+    (newData) => {
+        graphData.value = newData;
+    },
+);
+
+// When graphData updates
+watch(
+    graphData,
+    (newVal) => {
+        emit("updateDashboardData", newVal);
+    },
+    { deep: true },
+);
+
 //toggle filter element
-function toggleFilter() {
+const toggleFilter = () => {
     filter.value = !filter.value;
-}
+};
+
+// Toggle to stop dragging and clicking events while editing dashboard layout
+const isInteractive = ref(true);
+watch(
+    () => props.editMode,
+    (isEditing) => {
+        isInteractive.value = !isEditing; // Interactive = NOT editing
+    },
+);
 
 function toggleDataImport() {
     importDataTog.value = !importDataTog.value;
@@ -44,66 +84,99 @@ function resetChart() {
     chartData.value = [];
     resetTraceName();
     resetDotSize();
+    importDataTog.value = false;
 }
 
 // Chart data management:
 // Import data, select dataset, 1, User clicks and selects Dataset
-async function importData() {
-    datasetLoad.value = true;
+async function openImportModal() {
+    datasetLoading.value = true;
 
-    toggleDataImport();
-    const datasets = await fetchDatasets();
-    selectDataset.value = datasets.map((item) => ({
+    importDataTog.value = true;
+    const datasets: { id: number; dataset_name: string }[] =
+        await fetchDatasets();
+    visibleDatasets.value = datasets.map((item) => ({
         id: item.id,
         dataset_name: item.dataset_name,
     }));
 
-    datasetLoad.value = false;
+    datasetLoading.value = false;
+}
+
+function closeImportModal() {
+    importDataTog.value = false;
+    showCategory.value = false;
 }
 
 // Fetch categories from selected dataset, 2, User selects the categroy from dataset
-async function getCategories(id: number) {
+async function addCategoriesToModal(id: number) {
     // set div visibility
     showCategory.value = true;
     // Set category lading to true
-    catLoad.value = true;
+    catLoading.value = true;
 
-    const categories = await fetchCategories(id);
-    selectCategory.value = categories.map((item) => ({
+    const categories: { id: number; column_name: string }[] =
+        await fetchCategories(id);
+    visibleCategories.value = categories.map((item) => ({
         id: item.id,
-        category: item.column_name,
+        column_name: item.column_name,
     }));
 
-    catLoad.value = false;
+    catLoading.value = false;
 }
 
 // Fetch category data and timestamps, 3, data from the selected category is fetched
-async function getCategoryData(id: number) {
-    toggleDataImport();
+async function addTraceToGraph(
+    givenColId: number,
+    givenTraceName?: string,
+    fromDatabase = false,
+) {
+    importDataTog.value = false; // close modal if open
 
-    const data = await fetchPlots(id);
-    const xAxis = [];
-    const yAxis = [];
+    const data: { timestamp: any; data: any }[] = await fetchPlots(givenColId);
+    const xAxis: any[] = [];
+    const yAxis: any[] = [];
 
     data.forEach((item) => {
         xAxis.push(item.timestamp);
         yAxis.push(item.data);
     });
 
-    // chartData.value = [singleTrack];
+    if (givenTraceName == null && traceName.value == "") {
+        givenTraceName = "Unnamed Trace";
+    }
+
     const trace: Datatrace = addDataTrace(
         xAxis,
         yAxis,
         graphType.value,
-        traceName.value,
+        givenTraceName ?? traceName.value,
         {
             size: dotSize.value,
         },
     );
     chartData.value = [...chartData.value, trace];
 
+    if (!fromDatabase) {
+        // Only append to graphData if it's a user-added trace,
+        // not when loading from database
+        graphData.value = [
+            ...graphData.value,
+            {
+                columnId: givenColId,
+                traceName: givenTraceName ?? traceName.value,
+            },
+        ];
+    }
+
     // Reset Trace Name
     resetTraceName();
+}
+
+async function fetchGraphData() {
+    graphData.value.forEach(({ columnId, traceName }) => {
+        addTraceToGraph(columnId, traceName, true);
+    });
 }
 
 async function fetchPlots(id: number) {
@@ -141,9 +214,25 @@ async function fetchCategories(id: number) {
         });
 }
 
+function handleDatasetSelected(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const selectedDataset = parseInt(target.value) ?? 0;
+    if (selectedDataset) {
+        addCategoriesToModal(selectedDataset);
+    }
+}
+
+function handleCategorySelected(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const selectedCategory = parseInt(target.value) ?? 0;
+    if (selectedCategory) {
+        addTraceToGraph(selectedCategory);
+    }
+    showCategory.value = false;
+}
 // Chart array variables
-const selectDataset = ref([]);
-const selectCategory = ref([]);
+const visibleDatasets = ref<{ id: number; dataset_name: string }[]>([]);
+const visibleCategories = ref(<{ id: number; column_name: string }[]>[]);
 
 // Plotly template taken from: https://plotly.com/javascript/line-charts/
 
@@ -161,275 +250,245 @@ const layout = computed(() => ({
     mode: "markers",
     autosize: true,
     responsive: true,
+    margin: {
+        t: 50,
+        l: 50,
+        r: 30,
+        b: 100,
+    },
+    dragMode: isInteractive.value ? "pan" : false,
+    showlegend: true,
+    modebar: {
+        orientation: "h",
+    },
 }));
-const config = {
+const config = computed(() => ({
     responsive: true,
-};
+    scrollZoom: isInteractive.value,
+    editable: !isInteractive.value,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ["lasso2d", "autoScale2d", "toImage"],
+    displayLogo: false,
+}));
 
 const chartData = ref(<Datatrace[]>[]);
+
+onMounted(async () => {
+    await fetchGraphData();
+});
 </script>
 
 <template>
-    <div
-        class="flex flex-col justify-center rounded m-3 shadow shrink grow max-w-250"
-    >
-        <section class="shadow rounded flex flex-col w-full">
-            <nav
-                class="rounded-t-l flex flex-wrap flex-auto justify-between bg-gray-200"
-            >
-                <div
-                    id="chartTitle"
-                    class="border-b-gray-400 bg-white rounded shadow m-1 flex flex-row items-center"
-                >
-                    <i class="pi pi-pencil m-1"></i>
-                    <input
-                        id="graphTitle"
-                        v-model="graphTitle"
-                        type="text"
-                        name="Graph Title"
-                        class="m-1 w-25"
-                        aria-label="Rename Graph Title input"
-                        :placeholder="t.graphTitle"
-                    />
-                </div>
-                <div
-                    id="xTitle"
-                    class="border-b-gray-400 bg-white rounded shadow m-1 flex flex-row items-center"
-                >
-                    <i class="pi pi-pencil m-1"></i>
-                    <input
-                        id="xTitle"
-                        v-model="xTitle"
-                        type="text"
-                        name="X-Axis Title"
-                        class="m-1 w-25"
-                        aria-label="Rename x-axis input"
-                        :placeholder="t.xTitle"
-                    />
-                </div>
-                <div
-                    id="yTitle"
-                    class="border-b-gray-400 bg-white rounded shadow m-1 flex flex-row items-center"
-                >
-                    <i class="pi pi-pencil m-1"></i>
-                    <input
-                        id="graphTitle"
-                        v-model="yTitle"
-                        type="text"
-                        name="Y-Axis Title"
-                        class="m-1 w-25"
-                        aria-label="Rename y-axis Title input"
-                        :placeholder="t.yTitle"
-                    />
-                </div>
-                <div
-                    class="border-b-gray-400 rounded shadow m-1 bg-white flex flex-row items-center"
-                >
-                    <button
-                        class="m-1 font-sans"
-                        :aria-label="t.filterByDate"
-                        @click="toggleFilter"
-                    >
-                        <i class="pi pi-filter"></i>
-                    </button>
-                    <i v-if="!filter" class="pi pi-angle-down"></i>
-                    <i v-if="filter" class="pi pi-angle-double-up"></i>
-                </div>
-                <div
-                    class="border-b-gray-400 rounded shadow m-1 bg-white flex flex-row items-center"
-                >
-                    <i class="pi pi-cog m-3"></i>
-                    <select
-                        id="graphType"
-                        v-model="graphType"
-                        name="graphType"
-                        class="m-1"
-                        aria-label="Select Graph Type"
-                    >
-                        <option value="scatter" class="" aria-label="Scatter">
-                            {{ t.graphTypeScatter }}
-                        </option>
-                        <option value="bar" class="" aria-label="Bar">
-                            {{ t.graphTypeBar }}
-                        </option>
-                    </select>
-                </div>
-                <button
-                    class="m-1 bg-white rounded shadow"
-                    :aria-label="t.importdata"
-                    @click="importData"
-                >
-                    <i class="pi pi-database p-1"></i>
-                    <i class="pi pi-angle-right p-1"></i>
-                </button>
-            </nav>
+    <div class="h-full">
+        <nav
+            class="rounded-t-l flex flex-row overflow-x-auto bg-gray-200 rounded"
+        >
+            <!-- Date filter -->
             <div
-                v-if="filter"
-                id="filter"
-                class="border-b-gray-400 rounded m-3 shadow"
+                class="border-b-gray-400 rounded shadow m-1 bg-white flex flex-row items-center justify-center whitespace-nowrap"
+                @click="toggleFilter"
             >
-                <form class="flex justify-center items-center m-1">
-                    <div class="mx-3">
-                        <label for="start">{{ t.startDate }} </label>
-                        <input id="start" type="date" name="start" />
-                    </div>
-                    <div class="mx-3">
-                        <label for="end">{{ t.endDate }}</label>
-                        <input id="end" type="date" name="end" />
-                    </div>
-                    <button class="pi pi-search">{{ t.search }}</button>
-                </form>
+                <i class="pi pi-filter p-1" /> Filter by Date
+                <i v-if="!filter" class="pi pi-angle-down p-1"></i>
+                <i v-if="filter" class="pi pi-angle-double-up p-1"></i>
             </div>
-            <div class="flex justify-center rounded shrink w-full">
-                <VuePlotly
-                    :data="chartData"
-                    :layout="layout"
-                    :config="config"
-                    class="flex shrink w-full"
-                ></VuePlotly>
-            </div>
-        </section>
 
-        <transition name="modal">
+            <!-- Import Data -->
+            <div
+                v-if="editMode"
+                class="border-b-green-400 m-1 rounded shadow bg-white flex flex-row items-center whitespace-nowrap"
+            >
+                <button
+                    class="p-1"
+                    aria-label="Import data from database"
+                    @click="openImportModal"
+                >
+                    <i class="pi pi-database p-1" /> Add Plot
+                </button>
+                <i class="pi pi-plus p-1" />
+            </div>
+        </nav>
+        <div
+            v-if="filter"
+            id="filter"
+            class="border-b-gray-400 rounded m-3 shadow"
+        >
+            <form class="flex justify-center items-center m-1">
+                <div class="mx-3">
+                    <label for="start">{{ t.startDate }}</label>
+                    <input id="start" type="date" name="start" />
+                </div>
+                <div class="mx-3">
+                    <label for="end">{{ t.endDate }}</label>
+                    <input id="end" type="date" name="end" />
+                </div>
+                <button class="pi pi-search">{{ t.search }}</button>
+            </form>
+        </div>
+        <VuePlotly
+            :data="chartData"
+            :layout="layout"
+            :config="config"
+            class="flex shrink w-full max-h-full h-full min-h-0 overflow-hidden"
+        />
+        <!-- Barrier to block drag events on graph while in edit mode -->
+        <div
+            v-if="!isInteractive"
+            class="absolute inset-0 left-10 top-25 h-1/2 w-2/3 z-10 bg-transparent"
+        />
+        <transition name="modal" class="@container z-30">
             <div
                 v-if="importDataTog"
-                class="fixed inset-0 bg-gray-800/50 flex flex-row items-center justify-center rounded"
+                class="fixed inset-0 bg-gray-800/50 flex items-center justify-center rounded"
             >
-                <div class="rounded bg-gray-50">
-                    <div id="close" class="flex items-center justify-end m-1">
+                <div class="rounded bg-gray-50 flex flex-col h-6/8 p-2 w-3/4">
+                    <!-- Top (fixed position) -->
+                    <div class="flex items-center justify-between m-1">
+                        <div class="flex items-center justify-center">
+                            <button
+                                class="border rounded bg-gray-300-400 p-1"
+                                @click="resetChart"
+                            >
+                                <i class="pi pi-undo text-lg m-1"></i>
+                                Reset Chart
+                            </button>
+                        </div>
                         <button
                             class="border rounded bg-red-400"
                             aria-label="Close"
-                            @click="toggleDataImport"
+                            @click="closeImportModal()"
                         >
                             <i class="pi pi-times text-lg p-1"></i>
                         </button>
                     </div>
-                    <div
-                        v-if="importDataTog"
-                        id="createNewTrace"
-                        class="flex flex-row items-center justify-center m-1"
-                    >
-                        <input
-                            id="nameNewTrace"
-                            v-model="traceName"
-                            class="mx-1 border-gray-600 border shadow rounded-xl p-1"
-                            type="text"
-                            name="New trace name... "
-                            :placeholder="t.newTraceName"
-                            aria-label="Add trace name"
-                        />
-                        <label for="plotSize" class="mx-1"
-                            >{{ t.plotSize }}
-                        </label>
-                        <input
-                            v-model="dotSize"
-                            class="mx-1 border-gray-600 border shadow rounded-xl p-1"
-                            type="number"
-                            id="plotSize"
-                            placeholder="5"
-                            :aria-label="t.plotsize"
-                        />
-                    </div>
-                    <div id="dataset" class="p-4 bg-gray-50">
+
+                    <!-- Main form (grows to fill space and evenly space children) -->
+                    <div class="flex flex-col justify-evenly flex-1 px-2 pb-2">
+                        <!-- Name and size -->
                         <div
-                            v-if="datasetLoad"
-                            class="flex flex-row items-center justify-center m-3 overflow-y-scroll max-h-75"
+                            class="flex flex-wrap gap-2 w-full items-center justify-between"
                         >
-                            <!--                            Provided by Fergus, taken from https://git.cardiff.ac.uk/c22026756/68b-cardiff-earth/-/merge_requests/7#e05d7d656aa21d00d562fe408032f60e87d33639-->
-                            <svg
-                                class="animate-spin h-5 w-5 inline-block mr-2"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    class="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    stroke-width="4"
-                                ></circle>
-                                <path
-                                    class="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                ></path>
-                            </svg>
+                            <input
+                                v-model="traceName"
+                                class="mx-1 border-gray-600 border shadow rounded-xl p-1 min-w-0 flex-1 truncate"
+                                :placeholder="t.newTraceName"
+                            />
+                            <label for="plotSize">{{ t.plotSize }}</label>
+                            <input
+                                v-model="dotSize"
+                                class="border-gray-600 border shadow rounded-xl p-1 min-w-0 flex-1 truncate max-w-16"
+                                type="number"
+                                id="plotSize"
+                                placeholder="5"
+                                :aria-label="t.plotSize"
+                            />
                         </div>
-                        <ul class="space-y-2">
-                            <li
-                                v-for="dataset in selectDataset"
-                                :key="dataset.id"
-                            >
-                                <button
-                                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-                                    :aria-label="t.selDataset"
-                                    @click="getCategories(dataset.id)"
-                                >
-                                    {{ dataset.dataset_name }}
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div
-                        v-if="showCategory"
-                        id="category"
-                        class="mt-4 p-4 rounded-lg bg-gray-50 overflow-y-scroll max-h-75"
-                    >
+
+                        <!-- Dropdowns -->
                         <div
-                            v-if="catLoad"
-                            class="flex flex-row items-center justify-center m-3"
+                            class="flex flex-row gap-2 w-full items-center justify-between"
                         >
-                            <svg
-                                class="animate-spin h-5 w-5 inline-block mr-2"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
+                            <!-- Dataset -->
+                            <div
+                                class="p-2 bg-gray-50 flex-1 min-w-0 max-w-[50%]"
                             >
-                                <circle
-                                    class="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    stroke-width="4"
-                                ></circle>
-                                <path
-                                    class="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                ></path>
-                            </svg>
-                        </div>
-                        <ul class="space-y-2">
-                            <li
-                                v-for="category in selectCategory"
-                                :key="category.id"
-                            >
-                                <button
-                                    class="w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-                                    :aria-label="t.SelectCategory"
-                                    @click="getCategoryData(category.id)"
+                                <!-- Loader while dataset is loading -->
+                                <div
+                                    v-if="datasetLoading"
+                                    class="flex flex-row items-center justify-center min-h-[38px]"
                                 >
-                                    {{ category.category }}
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div
-                        id="saveClose"
-                        class="flex items-center justify-center m-1"
-                    >
-                        <button
-                            class="border rounded bg-gray-300-400 p-1"
-                            aria-label="Close"
-                            @click="resetChart"
-                        >
-                            <i class="pi pi-undo text-lg m-1"></i>
-                            {{ t.resetChart }}
-                        </button>
+                                    <svg
+                                        class="animate-spin h-5 w-5 text-gray-600"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            class="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="4"
+                                        />
+                                        <path
+                                            class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <!-- Dropdown shown only when not loading -->
+                                <select
+                                    v-else
+                                    @change="handleDatasetSelected($event)"
+                                    class="block w-full min-w-0 truncate bg-blue-600 text-white border border-gray-300 rounded px-2 py-1 shadow cursor-pointer"
+                                >
+                                    <option value="" selected disabled>
+                                        Dataset
+                                    </option>
+                                    <option
+                                        v-for="dataset in visibleDatasets"
+                                        :key="dataset.id"
+                                        :value="dataset.id"
+                                    >
+                                        {{ dataset.dataset_name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Category -->
+                            <div
+                                v-if="showCategory"
+                                class="p-2 bg-gray-50 flex-1 min-w-0 max-w-[50%]"
+                            >
+                                <!-- Loader while category is loading -->
+                                <div
+                                    v-if="catLoading"
+                                    class="flex flex-row items-center justify-center min-h-[38px]"
+                                >
+                                    <svg
+                                        class="animate-spin h-5 w-5 text-gray-600"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            class="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="4"
+                                        />
+                                        <path
+                                            class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <!-- Dropdown shown only when not loading -->
+                                <select
+                                    v-else
+                                    @change="handleCategorySelected($event)"
+                                    class="block w-full min-w-0 truncate bg-green-600 text-white border border-gray-300 rounded px-2 py-1 shadow cursor-pointer"
+                                >
+                                    <option value="" selected disabled>
+                                        Column
+                                    </option>
+                                    <option
+                                        v-for="category in visibleCategories"
+                                        :key="category.id"
+                                        :value="category.id"
+                                    >
+                                        {{ category.column_name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -449,5 +508,22 @@ const chartData = ref(<Datatrace[]>[]);
 .modal-enter-to,
 .modal-leave-from {
     opacity: 1;
+}
+.vue-plotly >>> .modebar {
+    position: absolute !important;
+    top: 0px !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+    display: flex !important;
+    flex-direction: row !important;
+    background: rgba(
+        255,
+        255,
+        255,
+        0.8
+    ) !important; /* Optional: Add background for visibility */
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 10;
 }
 </style>

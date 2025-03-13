@@ -10,6 +10,12 @@ const globeDiv = ref(null);
 const myGlobe = ref(null);
 const markers = ref([]);
 
+const emit = defineEmits(["deploymentClick"]);
+
+function onMarkerClick(deployment) {
+    emit("deploymentClick", deployment.uid);
+}
+
 // Function to prevent page scroll when interacting with the globe
 const preventScroll = (event) => {
     event.preventDefault();
@@ -30,6 +36,8 @@ async function fetchDeployments() {
             lng: deployment.longitude,
             size: 0.01,
             id: deployment.id,
+            uid: deployment.uid,
+            name: deployment.name,
         }));
 
         if (myGlobe.value) {
@@ -105,7 +113,7 @@ onMounted(async () => {
             .onPolygonClick(() => {
                 if (myGlobe.value) {
                     myGlobe.value.pointOfView(
-                        { lat: latitude, lng: longitude, altitude: 0.7 },
+                        { lat: latitude, lng: longitude, altitude: 3 },
                         2000,
                     );
                     // Add a marker dynamically
@@ -116,7 +124,16 @@ onMounted(async () => {
                     });
                     myGlobe.value.pointsData(markers.value);
                 }
-            });
+            })
+            .onPointClick((point) => {
+                if (point.uid) {
+                    emit("deploymentClick", point.uid);
+                }
+            })
+            .onPointHover((point) => {
+                myGlobe.value.pointAltitude((p) => (p === point ? 0.12 : 0.1));
+            })
+            .pointLabel((d) => d.name);
 
         addEventListeners();
 

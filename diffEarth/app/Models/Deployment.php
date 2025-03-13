@@ -18,13 +18,16 @@ class Deployment extends Model
         'name',        // Name of the deployment
         'latitude',    // Latitude coordinate
         'longitude',   // Longitude coordinate
-        'description'  // Deployment description
+        'description', // Deployment description
+        'info',        // Deployment information (shown on layout)
+        'layout',      // Deployment layout
     ];
 
     // The attributes that should be cast to native types
     protected $casts = [
         'latitude' => 'float',    // Ensure latitude is stored as a float
         'longitude' => 'float',   // Ensure longitude is stored as a float
+        'layout' => 'array',
     ];
 
     // Validates the deployment data before saving.
@@ -35,7 +38,9 @@ class Deployment extends Model
             'name' => ['required', 'string', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'description' => ['nullable', 'string', 'max:1000'], // Optional description
+            'description' => ['nullable', 'string', 'max:1000'],
+            'info' => ['nullable', 'string'],
+            'layout' => ['nullable', 'array'],
         ]);
     }
 }

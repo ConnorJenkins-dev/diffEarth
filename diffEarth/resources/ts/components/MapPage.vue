@@ -5,6 +5,9 @@ import GlobeComponent from "./GlobeComponent.vue";
 import GlobeComponent2 from "./GlobeComponent2.vue";
 import DeploymentView from "./DeploymentView.vue";
 import AddDeployment from "./AddDeployment.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const globeComponent = ref(null); // Reference for the active globe component
 const currentGlobe = ref(1); // Track which globe component to display (1 or 2)
@@ -17,6 +20,10 @@ function loadGlobeComponent() {
 // Function to load Map globe
 function loadGlobeComponent2() {
     currentGlobe.value = 2;
+}
+
+function goToDeployment(uuid) {
+    router.push(`/dashboard/${uuid}`);
 }
 </script>
 
@@ -57,11 +64,13 @@ function loadGlobeComponent2() {
                     v-if="currentGlobe === 1"
                     ref="globeComponent"
                     class="h-full w-full"
+                    @deploymentClick="goToDeployment"
                 />
                 <GlobeComponent2
                     v-else
                     ref="globeComponent"
                     class="h-full w-full"
+                    @deploymentClick="goToDeployment"
                 />
             </section>
         </section>

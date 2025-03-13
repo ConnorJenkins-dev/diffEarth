@@ -4,7 +4,7 @@
 
 <template>
     <button
-        class="border-2 rounded-full w-full bg-[var(--darkBlueAlt)] hover:bg-[var(--lightBlue)] text-[var(--greyBlueAlt)] hover:text-[var(--darkBlueAlt)] py-0.5 px-4 transition border-[var(--greyBlue)]"
+        class="border-2 rounded-full w-auto bg-[var(--darkBlueAlt)] hover:bg-[var(--lightBlue)] text-[var(--greyBlueAlt)] hover:text-[var(--darkBlueAlt)] py-0.5 px-4 transition border-[var(--greyBlue)]"
     >
         <slot></slot>
     </button>

@@ -3,11 +3,13 @@ import UserDashboard from "./components/UserDashboard.vue";
 import AboutUs from "./components/AboutUs.vue";
 import PageNotFound from "./components/PageNotFound.vue";
 import MapPage from "./components/MapPage.vue";
+import PublicDashboard from "./components/PublicDashboard.vue";
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/", redirect: "/home" },
     { path: "/home", component: MapPage },
     { path: "/dashboard", component: UserDashboard },
+    { path: "/dashboard/:uuid", component: PublicDashboard },
     { path: "/about/:id", component: AboutUs },
     { path: "/about", redirect: "/about/1" },
     { path: "/map", component: MapPage },

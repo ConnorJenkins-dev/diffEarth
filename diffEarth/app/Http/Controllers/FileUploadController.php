@@ -25,8 +25,8 @@ class FileUploadController extends Controller
         ProcessCsvJob::dispatch($relativePath, $timestampedFilename);
 
         return response()->json([
-            'message' => 'File uploaded successfully and is being processed in the background.'
-            . ' Check back in a few minutes.'
+            'message' => 'File uploaded successfully and is being processed.'
+            . ' Please do not leave this page until it appears in the table.'
         ]);
     }
 }

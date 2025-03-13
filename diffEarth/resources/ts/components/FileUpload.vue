@@ -1,7 +1,8 @@
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { useToast } from "../composables/useToast";
 import { useTranslation } from "../composables/useTranslation";
+import { onBeforeRouteLeave } from "vue-router";
 
 const { t } = useTranslation();
 
@@ -9,6 +10,28 @@ const showModal = ref(false);
 const selectedFile = ref(null);
 const { showToast } = useToast();
 const uploading = ref(false);
+const processing = ref(false);
+const unsaved = ref(false);
+
+onBeforeRouteLeave((to, from, next) => {
+    if (processing.value) {
+        const answer = window.confirm(
+            "WARNING: A file is still being processed. If you leave, it will not save. Are you sure you want to leave?",
+        );
+        if (answer) {
+            next(); // Allow navigation
+        } else {
+            next(false); // Cancel navigation
+        }
+    } else {
+        next(); // No edits, allow navigation
+    }
+});
+
+const emit = defineEmits<{
+    (e: "csvProcessed", value: number): void;
+    (e: "fileProcessing", value: boolean): void;
+}>();
 
 function openModal() {
     showModal.value = true;
@@ -72,10 +95,32 @@ async function handleUpload() {
 
         showToast(data.message, "success");
         closeModal();
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        processing.value = true;
+        emit("fileProcessing", true);
     } catch (error) {
         showToast(error, "error");
     }
 }
+
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    event.preventDefault();
+};
+
+onMounted(() => {
+    window.Echo.channel("diffEarth-channel").listen(
+        "CsvUploaded",
+        (event: any) => {
+            emit("csvProcessed", event.datasetId);
+            emit("fileProcessing", false);
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            processing.value = false;
+            showToast(
+                "File has been processed! Please save layout before leaving.",
+            );
+        },
+    );
+});
 </script>
 
 <template>
@@ -86,19 +131,27 @@ async function handleUpload() {
         >
             {{ t.uploadCsv }}
         </button>
-        <transition name="modal">
+        <!-- Modal popup-->
+        <transition name="modal" class="z-9000">
+            <!-- Modal Background -->
             <div
                 v-if="showModal"
                 class="fixed inset-0 bg-gray-800/50 flex items-center justify-center"
                 @click.self="closeModal"
             >
-                <div class="bg-white rounded shadow-lg w-1/3 p-6 relative">
+                <!-- Modal Body -->
+                <div
+                    class="bg-white rounded shadow-lg w-full min-h-1/2 p-6 m-2 relative flex flex-col items-center justify-center"
+                >
+                    <!-- X Button -->
                     <button
                         class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
                         @click="closeModal"
                     >
                         &#10006;
                     </button>
+
+                    <!-- Modal Content -->
                     <h2 class="text-xl font-bold mb-4 text-black">
                         {{ t.uploadFile }}
                     </h2>
@@ -116,7 +169,7 @@ async function handleUpload() {
                             />
                         </label>
 
-                        <div class="flex justify-end space-x-2">
+                        <div class="flex justify-between space-x-2">
                             <button
                                 type="submit"
                                 :disabled="uploading"
