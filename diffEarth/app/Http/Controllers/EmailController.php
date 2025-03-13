@@ -13,21 +13,23 @@ class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {
-        // Validate the request
-        $request->validate([
-            'location' => 'required|string',
-            'column' => 'required|string',
-            'threshold' => 'required|numeric',
-            'emails' => 'required|array',
-            'emails.*' => 'email',
-        ]);
+        // Ensure JSON responses for validation errors
+        if ($request->expectsJson()) {
+            \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'location' => 'required|string',
+                'column' => 'required|string',
+                'threshold' => 'required|numeric',
+                'emails' => 'required|array',
+                'emails.*' => 'email',
+            ])->validate();
+        }
 
         // Create the alert record in the database
         $alert = Alert::create([
             'location' => $request->location,
             'column' => $request->column,
             'threshold' => $request->threshold,
-            'emaillist' => json_encode($request->emails), // Convert the email array to a JSON string
+            'emaillist' => json_encode($request->emails),
         ]);
 
         // Now proceed with the email sending process

@@ -8,20 +8,22 @@ class EmailFormTest extends TestCase
 {
     public function test_email_form_submission_success()
     {
-        $response = $this->post('/send-email', [
-            'to' => 'test@example.com',
-            'subject' => 'Test Email',
-            'message' => 'This is a test message.',
+        $response = $this->post('/api/send-email', [
+            'location' => 'Test Location',
+            'column' => 'Test Column',
+            'threshold' => 100,
+            'emails' => ['test@example.com'],
         ]);
 
         $response->assertStatus(200)
-            ->assertJson(['status' => 'success']);
+            ->assertJson(['message' => 'Emails sent and alert saved successfully!']);
     }
 
     public function test_email_form_validation_errors()
     {
-        $response = $this->post('/send-email', []); // No data sent
+        $response = $this->postJson('/api/send-email', []); // Use postJson for API tests
 
-        $response->assertStatus(422); // Laravel validation fails
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['location', 'column', 'threshold', 'emails']);
     }
 }
