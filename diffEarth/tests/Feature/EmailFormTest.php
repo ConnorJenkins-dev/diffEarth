@@ -9,8 +9,8 @@ class EmailFormTest extends TestCase
     public function test_email_form_submission_success()
     {
         $response = $this->post('/api/send-email', [
-            'location' => 'Test Location',
-            'column' => 'Test Column',
+            'location' => 'TestLocation',
+            'column' => 'TestColumn',
             'threshold' => 100,
             'emails' => ['test@example.com'],
         ]);
