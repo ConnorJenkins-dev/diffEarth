@@ -44,13 +44,14 @@ Workflow
 * Related features in development will be collaborated on
 * Draft prefix is only removed once merge request is ready (including squashed commits)
 * When resolving merge conflicts, extreme care will be taken to avoid disrupting or discarding others’ work
+* Team members can work on multiple issues simultaneously however still adhering to Review rules 20/03
 
 Review
 * Merge requests will go through 2 reviews
 * Reviews will be thorough
 * Reviewers will follow all testing instructions and follow review checklists
 * Reviewers will be assigned weekly
-* If you are assigned a review, the review will be completed within 48 hours, or notice given
+* If you are assigned a review, the review will be completed within 24 hours, or notice given (Amended 20/03)
 * Merge request reviews to be addressed before development on other issues - 06/03/25
 
 Meetings
