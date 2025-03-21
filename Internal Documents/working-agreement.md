@@ -5,7 +5,7 @@
 Write your working hours/days and initials to sign the working agreement.
 
 Fergus
-* 1:00pm-8:00pm Mon-Fri (On days with lectures, it will be 9:00am-5:00pm)
+* 2:00pm-9:00pm Mon-Fri. May shift earlier if I'm not at work in the morning.
 * FL
 
 Cole
@@ -19,8 +19,9 @@ Diyorbek
 * DS
 
 Connor
-* Monday – Friday 11:00 – 20:00
-* CJ
+* Monday – Friday - Core hours: 14:00 - 17:00.
+* Will be working more hours than stated, however I'll ensure I am contactable and working within these core hours
+* CJ - 06/03/25
 
 Beau
 * Sunday-Saturday 12:00 - 20:00
@@ -43,18 +44,21 @@ Workflow
 * Related features in development will be collaborated on
 * Draft prefix is only removed once merge request is ready (including squashed commits)
 * When resolving merge conflicts, extreme care will be taken to avoid disrupting or discarding others’ work
+* Team members can work on multiple issues simultaneously however still adhering to Review rules 20/03
 
 Review
 * Merge requests will go through 2 reviews
 * Reviews will be thorough
 * Reviewers will follow all testing instructions and follow review checklists
 * Reviewers will be assigned weekly
-* If you are assigned a review, the review will be completed within 48 hours, or notice given
+* If you are assigned a review, the review will be completed within 24 hours, or notice given (Amended 20/03)
+* Merge request reviews to be addressed before development on other issues - 06/03/25
 
 Meetings
 * Team members will attend all meetings that they have agreed to
 * Any issues blocking development will be raised during meetings
 * Meetings will be recorded or transcribed
+* Daily standups to take place in the afternoon, target time 14:00 however flexible depending on team availability - 06/03/25
 
 General Working Environment
 * Disagreements will be handled respectfully
