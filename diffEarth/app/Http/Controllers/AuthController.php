@@ -12,10 +12,12 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
+        $user = $request->user();
+        $roles = $user->roles->pluck('name');
+
         return response()->json([
-            'user' => $request->user(),
-            'roles' => $request->user()->roles->pluck('name'),
-            //this will break if a user doesn't have a role but i dunno how to handle that
+            'user' => $user,
+            'roles' => $roles->isEmpty() ? null : $roles,
         ]);
     }
 
@@ -29,7 +31,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        Auth::logout();
-        return response()->json(['message' => 'User has logged out']);
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+        if (Auth::attempt($credentials)) {
+            // Authentication passed, generate a token
+            $user = Auth::user();
+            $token = $user->createToken('diffEarth')->plainTextToken;
+
+            return response()->json(['token' => $token], 200);
+        }
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 }

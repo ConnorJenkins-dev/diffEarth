@@ -36,5 +36,13 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
+        Route::aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
+
+        Route::middleware(['auth:sanctum', EnsureFrontendRequestsAreStateful::class])->group(function () {
+            Route::get('/user', function (Request $request) {
+                return $request->user();
+            });
+        });
     }
 }

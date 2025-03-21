@@ -10,6 +10,7 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        // Specify custom pivot table name if needed
+        return $this->belongsToMany(User::class, 'role_user')->withTimestamps();
     }
 }
