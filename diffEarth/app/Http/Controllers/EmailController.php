@@ -75,7 +75,19 @@ class EmailController extends Controller
                                {$request->threshold}</b></p>
                                <p>You will be notified by this email when that happens</p>
                                <p>Kind regards,</p>
-                               <p>Chil mailing service </p>";
+                               <p>Chil mailing service </p>
+                               <p> </p>
+                               <p> </p>
+                               <p>________________________________</p>
+                               <p> </p>
+                               <p> </p>
+                               <p>Helo, </p>
+                               <p>Rydych wedi cael eich dewis i olrhain <b>{$request->location}</b></p>
+                               <p>Monitro pan fydd <b>{$request->column}</b> yn fwy na'r trothwy <b>
+                                {$request->threshold}</b></p>
+                               <p>Byddwch yn cael eich hysbysu gan yr e-bost hwn pan fydd hynny'n digwydd</p>
+                               <p>Cofion gorau,</p>
+                               <p>Gwasanaeth postio Chil</p>";
 
                 $mail->AltBody = "Alert for {$request->location}. Column: {$request->column}.
                 Threshold exceeded: {$request->threshold}";

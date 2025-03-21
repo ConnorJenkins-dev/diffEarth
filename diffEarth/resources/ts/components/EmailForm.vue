@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
+import { useTranslation } from "../composables/useTranslation";
 
+const { t } = useTranslation();
 const form = ref({
     location: "",
     column: "",
@@ -10,21 +12,21 @@ const form = ref({
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const validateEmails = (emailString) => {
-    if (!emailString) return "Please enter at least one email.";
+    if (!emailString) return t.empty;
 
     // Detect multiple @ symbols in the entire input without commas for lists of emails
     if (
         emailString.includes("@@") ||
         (emailString.match(/@/g) || []).length > emailString.split(",").length
     ) {
-        return "Emails must be comma-separated. Please separate multiple emails with commas.";
+        return t.commaSeparated;
     }
 
     const emails = emailString.split(",").map((email) => email.trim());
 
     for (let email of emails) {
         if (!emailRegex.test(email)) {
-            return `Invalid email: "${email}". Please enter a valid email.`;
+            return `${t.value.invalid} ${email} ${t.value.pleaseEnter}`;
         }
     }
 
@@ -57,7 +59,7 @@ const sendEmail = async () => {
         const data = await response.json(); // Parse JSON response
 
         if (!response.ok) {
-            throw new Error(data.message || "Failed to send email");
+            throw new Error(data.message || t.sendFailure);
         }
 
         alert(data.message); // Show success message
@@ -67,13 +69,12 @@ const sendEmail = async () => {
     }
 };
 </script>
-
 <template>
     <div class="p-6 bg-white rounded-lg w-full max-w-lg">
-        <h2 class="text-lg font-semibold mb-4">Send Email Notification</h2>
+        <h2 class="text-lg font-semibold mb-4">{{ t.title }}</h2>
         <form @submit.prevent="sendEmail">
             <div class="mb-3">
-                <label class="block font-medium">Location Name</label>
+                <label class="block font-medium">{{ t.locationLabel }}</label>
                 <input
                     type="text"
                     v-model="form.location"
@@ -83,7 +84,7 @@ const sendEmail = async () => {
             </div>
 
             <div class="mb-3">
-                <label class="block font-medium">Column</label>
+                <label class="block font-medium">{{ t.columnLabel }}</label>
                 <input
                     type="text"
                     v-model="form.column"
@@ -93,7 +94,7 @@ const sendEmail = async () => {
             </div>
 
             <div class="mb-3">
-                <label class="block font-medium">Threshold</label>
+                <label class="block font-medium">{{ t.thresholdLabel }}</label>
                 <input
                     type="number"
                     v-model="form.threshold"
@@ -103,9 +104,7 @@ const sendEmail = async () => {
             </div>
 
             <div class="mb-3">
-                <label class="block font-medium"
-                    >Emails (comma-separated)</label
-                >
+                <label class="block font-medium">{{ t.emailsLabel }}</label>
                 <input
                     type="text"
                     v-model="form.emails"
@@ -118,7 +117,7 @@ const sendEmail = async () => {
                 type="submit"
                 class="bg-[var(--lightBlue)] border-2 border-[var(--darkestBlue)] rounded-lg px-4 py-2 font-bold transition hover:bg-[var(--darkestBlue)] hover:border-[var(--lightBlue)] hover:text-white"
             >
-                Send Email
+                {{ t.submitButton }}
             </button>
         </form>
     </div>

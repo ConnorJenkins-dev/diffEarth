@@ -2,6 +2,9 @@
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 
+import { useTranslation } from "../composables/useTranslation";
+
+const { t } = useTranslation();
 // Interface representing a single dataset object
 interface Dataset {
     dataset_name: string;
@@ -81,7 +84,7 @@ onMounted(() => {
 <template>
     <div class="p-4 transform scale-88 origin-top-left">
         <div v-if="loading" class="text-center py-4 text-gray-600 font-medium">
-            Loading datasets...
+            {{ t.loading }}
         </div>
         <div v-else>
             <!-- Dropdown for Dataset Selection -->
@@ -90,7 +93,7 @@ onMounted(() => {
                     for="dataset-select"
                     class="block mb-1 text-gray-700 font-medium"
                 >
-                    Select Dataset:
+                    {{ t.selectDataset }}
                 </label>
                 <select
                     id="dataset-select"
@@ -99,7 +102,7 @@ onMounted(() => {
                     @change="onDatasetChange"
                 >
                     <!-- Default Option -->
-                    <option value="" selected>Show All Datasets</option>
+                    <option value="" selected>{{ t.showAllDatasets }}</option>
                     <!-- Loop through Dataset Options -->
                     <option
                         v-for="option in datasets"
@@ -121,22 +124,22 @@ onMounted(() => {
                             <th
                                 class="border border-gray-200 px-3 py-2 text-left max-w-[150px] truncate"
                             >
-                                Name
+                                {{ t.name }}
                             </th>
                             <th
                                 class="border border-gray-200 px-3 py-2 text-left max-w-[250px] truncate"
                             >
-                                Description
+                                {{ t.description }}
                             </th>
                             <th
                                 class="border border-gray-200 px-3 py-2 text-center w-[120px]"
                             >
-                                Last Updated
+                                {{ t.lastUpdated }}
                             </th>
                             <th
                                 class="border border-gray-200 px-3 py-2 text-center w-[120px]"
                             >
-                                Created At
+                                {{ t.createdAt }}
                             </th>
                         </tr>
                     </thead>
@@ -190,11 +193,11 @@ onMounted(() => {
                         fetchDatasets(pagination.prev_page_url)
                     "
                 >
-                    Previous
+                    {{ t.previous }}
                 </button>
 
                 <span class="text-gray-600 text-sm font-medium">
-                    Page {{ pagination.current_page }} of
+                    {{ t.page }} {{ pagination.current_page }} {{ t.of }}
                     {{ pagination.last_page }}
                 </span>
 
@@ -206,7 +209,7 @@ onMounted(() => {
                         fetchDatasets(pagination.next_page_url)
                     "
                 >
-                    Next
+                    {{ t.next }}
                 </button>
             </div>
         </div>

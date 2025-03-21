@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from "vue";
 import { useToast } from "../composables/useToast";
+import { useTranslation } from "../composables/useTranslation";
+
+const { t } = useTranslation();
 
 const showModal = ref(false);
 const selectedFile = ref(null);
@@ -21,10 +24,7 @@ function onFileChange(event) {
         const file = target.files[0];
         // Check if file size is greater than 20MB
         if (file.size > 20 * 1024 * 1024) {
-            showToast(
-                "File is too large. Maximum allowed size is 20MB.",
-                "error",
-            );
+            showToast(t.fileSizeError, "error");
             selectedFile.value = null;
             return;
         }
@@ -38,11 +38,11 @@ function showAToast() {
 
 async function handleUpload() {
     if (!selectedFile.value) {
-        showToast("Please select a file to upload", "error");
+        showToast(t.selectFileError, "error");
         return;
     }
     uploading.value = true;
-    showToast("Uploading...", "success", 3000);
+    showToast(t.uploading, "success", 3000);
 
     const formData = new FormData();
     formData.append("file", selectedFile.value);
@@ -84,7 +84,7 @@ async function handleUpload() {
             @click="openModal"
             class="bg-[var(--lightBlue)] border-2 border-[var(--darkestBlue)] rounded-lg px-4 py-2 font-bold transition hover:bg-[var(--darkestBlue)] hover:border-[var(--lightBlue)] hover:text-white"
         >
-            Upload CSV
+            {{ t.uploadCsv }}
         </button>
         <transition name="modal">
             <div
@@ -100,14 +100,15 @@ async function handleUpload() {
                         &#10006;
                     </button>
                     <h2 class="text-xl font-bold mb-4 text-black">
-                        Upload File
+                        {{ t.uploadFile }}
                     </h2>
 
                     <form @submit.prevent="handleUpload">
                         <label
                             class="block mb-2 text-sm font-medium text-gray-700"
                         >
-                            Choose a file to upload
+                            {{ t.chooseFile }}
+
                             <input
                                 type="file"
                                 class="mb-4 block w-full text-sm text-gray-900 border border-gray-300 rounded"
@@ -143,14 +144,14 @@ async function handleUpload() {
                                         ></path>
                                     </svg>
                                 </template>
-                                <template v-else> Upload </template>
+                                <template v-else> {{ t.upload }} </template>
                             </button>
                             <button
                                 type="button"
                                 @click="closeModal"
                                 class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
                             >
-                                Cancel
+                                {{ t.cancel }}
                             </button>
                         </div>
                     </form>

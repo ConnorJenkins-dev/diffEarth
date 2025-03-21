@@ -2,6 +2,8 @@
 import Header from "./Header.vue";
 import AboutCard from "./AboutCard.vue";
 import AboutBio from "./AboutBio.vue";
+import { useTranslation } from "../composables/useTranslation";
+const { t } = useTranslation();
 </script>
 
 <template>
@@ -12,7 +14,7 @@ import AboutBio from "./AboutBio.vue";
                 <h1
                     class="underline text-3xl font-bold font-sans italic text-gray-800"
                 >
-                    About Us
+                    {{ t.aboutUs }}
                 </h1>
             </div>
             <div class="flex flex-col items-center">

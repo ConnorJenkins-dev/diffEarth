@@ -2,7 +2,9 @@
 import { computed, ref } from "vue";
 import { VuePlotly } from "@clalarco/vue3-plotly";
 import { Datatrace, addDataTrace } from "../datatrace.js";
+import { useTranslation } from "../composables/useTranslation";
 
+const { t } = useTranslation();
 // toggle elements when clicked
 const filter = ref(false);
 
@@ -184,10 +186,10 @@ const chartData = ref(<Datatrace[]>[]);
                         id="graphTitle"
                         v-model="graphTitle"
                         type="text"
-                        name="graphTitle"
+                        name="Graph Title"
                         class="m-1 w-25"
                         aria-label="Rename Graph Title input"
-                        placeholder="Graph Title ..."
+                        :placeholder="t.graphTitle"
                     />
                 </div>
                 <div
@@ -202,7 +204,7 @@ const chartData = ref(<Datatrace[]>[]);
                         name="X-Axis Title"
                         class="m-1 w-25"
                         aria-label="Rename x-axis input"
-                        placeholder="X-Axis Title"
+                        :placeholder="t.xTitle"
                     />
                 </div>
                 <div
@@ -217,7 +219,7 @@ const chartData = ref(<Datatrace[]>[]);
                         name="Y-Axis Title"
                         class="m-1 w-25"
                         aria-label="Rename y-axis Title input"
-                        placeholder="Y-Axis Title"
+                        :placeholder="t.yTitle"
                     />
                 </div>
                 <div
@@ -225,7 +227,7 @@ const chartData = ref(<Datatrace[]>[]);
                 >
                     <button
                         class="m-1 font-sans"
-                        aria-label="filter by date"
+                        :aria-label="t.filterByDate"
                         @click="toggleFilter"
                     >
                         <i class="pi pi-filter"></i>
@@ -245,16 +247,16 @@ const chartData = ref(<Datatrace[]>[]);
                         aria-label="Select Graph Type"
                     >
                         <option value="scatter" class="" aria-label="Scatter">
-                            Scatter
+                            {{ t.graphTypeScatter }}
                         </option>
                         <option value="bar" class="" aria-label="Bar">
-                            Bar
+                            {{ t.graphTypeBar }}
                         </option>
                     </select>
                 </div>
                 <button
                     class="m-1 bg-white rounded shadow"
-                    aria-label="Import data from database "
+                    :aria-label="t.importdata"
                     @click="importData"
                 >
                     <i class="pi pi-database p-1"></i>
@@ -268,14 +270,14 @@ const chartData = ref(<Datatrace[]>[]);
             >
                 <form class="flex justify-center items-center m-1">
                     <div class="mx-3">
-                        <label for="start">Start date: </label>
+                        <label for="start">{{ t.startDate }} </label>
                         <input id="start" type="date" name="start" />
                     </div>
                     <div class="mx-3">
-                        <label for="end">End date: </label>
+                        <label for="end">{{ t.endDate }}</label>
                         <input id="end" type="date" name="end" />
                     </div>
-                    <button class="pi pi-search">Search</button>
+                    <button class="pi pi-search">{{ t.search }}</button>
                 </form>
             </div>
             <div class="flex justify-center rounded shrink w-full">
@@ -314,17 +316,19 @@ const chartData = ref(<Datatrace[]>[]);
                             class="mx-1 border-gray-600 border shadow rounded-xl p-1"
                             type="text"
                             name="New trace name... "
-                            placeholder="New trace name..."
+                            :placeholder="t.newTraceName"
                             aria-label="Add trace name"
                         />
-                        <label for="plotSize" class="mx-1">Plot size: </label>
+                        <label for="plotSize" class="mx-1"
+                            >{{ t.plotSize }}
+                        </label>
                         <input
                             v-model="dotSize"
                             class="mx-1 border-gray-600 border shadow rounded-xl p-1"
                             type="number"
                             id="plotSize"
                             placeholder="5"
-                            aria-label="Plot size"
+                            :aria-label="t.plotsize"
                         />
                     </div>
                     <div id="dataset" class="p-4 bg-gray-50">
@@ -361,7 +365,7 @@ const chartData = ref(<Datatrace[]>[]);
                             >
                                 <button
                                     class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-                                    aria-label="Select dataset"
+                                    :aria-label="t.selDataset"
                                     @click="getCategories(dataset.id)"
                                 >
                                     {{ dataset.dataset_name }}
@@ -406,7 +410,7 @@ const chartData = ref(<Datatrace[]>[]);
                             >
                                 <button
                                     class="w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-                                    aria-label="Select category"
+                                    :aria-label="t.SelectCategory"
                                     @click="getCategoryData(category.id)"
                                 >
                                     {{ category.category }}
@@ -424,7 +428,7 @@ const chartData = ref(<Datatrace[]>[]);
                             @click="resetChart"
                         >
                             <i class="pi pi-undo text-lg m-1"></i>
-                            Reset Chart
+                            {{ t.resetChart }}
                         </button>
                     </div>
                 </div>

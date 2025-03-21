@@ -1,10 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import DashboardButton from "./DashboardButton.vue";
 import FileUpload from "./FileUpload.vue";
 import Header from "./Header.vue";
 import DatasetView from "./DatasetView.vue";
 import PlotlyGraph from "./PlotlyGraph.vue";
 import EmailForm from "./EmailForm.vue";
+import { useTranslation } from "../composables/useTranslation";
+const { t } = useTranslation();
 </script>
 
 <template>
@@ -17,28 +19,28 @@ import EmailForm from "./EmailForm.vue";
                 <nav class="flex w-full">
                     <ul class="flex flex-wrap justify-between w-full">
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 1</DashboardButton>
+                            <DashboardButton>{{ t.button1 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 2</DashboardButton>
+                            <DashboardButton>{{ t.button2 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 3</DashboardButton>
+                            <DashboardButton>{{ t.button3 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 4</DashboardButton>
+                            <DashboardButton>{{ t.button4 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 5</DashboardButton>
+                            <DashboardButton>{{ t.button5 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 6</DashboardButton>
+                            <DashboardButton>{{ t.button6 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 7</DashboardButton>
+                            <DashboardButton>{{ t.button7 }}</DashboardButton>
                         </li>
                         <li class="flex-1 text-center">
-                            <DashboardButton> Button 8</DashboardButton>
+                            <DashboardButton>{{ t.button8 }}</DashboardButton>
                         </li>
                     </ul>
                 </nav>
