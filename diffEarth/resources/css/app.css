@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 @source "../views";
@@ -30,3 +31,8 @@ body {
 #nav {
     padding: 1rem;
 }
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+>>>>>>> 4034c89 (ive created many of the backend files i'll need however a few were added automatically after installing breeze that i wont need. I will find and remove the unneeded ones later)

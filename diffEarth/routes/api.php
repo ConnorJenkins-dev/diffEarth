@@ -25,6 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
+
+Route::middleware('auth:sanctum')->get('/user/roles', [UserController::class, 'getRoles']);
+
+
 Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store'])
     ->name('upload.store');
 
@@ -33,9 +39,17 @@ Route::get('/test', function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', [AuthController::class, 'user']);
-    Route::get('/has-role/{role}', [AuthController::class, 'hasRole']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->user());
+    });
+
+    Route::get('/dashboard', function () {
+        return response()->json(['message' => 'Dashboard for authenticated users']);
+    });
+
+    Route::middleware(['role:admin'])->get('/admin', function () {
+        return response()->json(['message' => 'Admin panel']);
+    });
 });
 
 Route::get('/dataset', [App\Http\Controllers\GraphDataController::class, 'getAllDatasets'])
