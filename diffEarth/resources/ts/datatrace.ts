@@ -3,6 +3,10 @@ export interface Datatrace {
     y: number[];
     type: string;
     name: string;
+    mode: string;
+    marker?: {
+        size: number;
+    };
 }
 
 export function addDataTrace(
@@ -10,6 +14,14 @@ export function addDataTrace(
     y: number[],
     type: string,
     name: string,
+    marker: { size: number },
 ): Datatrace {
-    return { x: x, y: y, type: type, name: name };
+    return {
+        x: x,
+        y: y,
+        type: type,
+        name: name,
+        mode: "markers",
+        marker: marker,
+    };
 }

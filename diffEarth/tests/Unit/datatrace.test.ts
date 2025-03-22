@@ -7,6 +7,7 @@ describe("addDataTrace", () => {
             [4, 5, 6],
             "scatter",
             "testTrace",
+            { size: 10 },
         );
 
         expect(test).toEqual({
@@ -14,17 +15,23 @@ describe("addDataTrace", () => {
             y: [4, 5, 6],
             type: "scatter",
             name: "testTrace",
+            mode: "markers",
+            marker: { size: 10 },
         });
     });
 
     it("should return a datatrace with empty arrays", () => {
-        const test: Datatrace = addDataTrace([], [], "scatter", "testTrace");
+        const test: Datatrace = addDataTrace([], [], "scatter", "testTrace", {
+            size: 10,
+        });
 
         expect(test).toEqual({
             x: [],
             y: [],
             type: "scatter",
             name: "testTrace",
+            mode: "markers",
+            marker: { size: 10 },
         });
     });
 
@@ -34,6 +41,7 @@ describe("addDataTrace", () => {
             [-4, -5, -6],
             "scatter",
             "testTrace",
+            { size: 10 },
         );
 
         expect(test).toEqual({
@@ -41,6 +49,8 @@ describe("addDataTrace", () => {
             y: [-4, -5, -6],
             type: "scatter",
             name: "testTrace",
+            mode: "markers",
+            marker: { size: 10 },
         });
     });
 });

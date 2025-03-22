@@ -8,35 +8,48 @@ const filter = ref(false);
 
 const importDataTog = ref(false);
 
-const datasetTog = ref(false);
-
 const showCategory = ref(false);
 
-const graphType = ref("scatter");
+const graphType = ref("markers");
 
 const catLoad = ref(false);
 
 const datasetLoad = ref(false);
+
+const traceName = ref("");
+
+const dotSize = ref(5);
 
 //toggle filter element
 function toggleFilter() {
     filter.value = !filter.value;
 }
 
-function toggleDataset() {
-    datasetTog.value = !datasetTog.value;
-}
-
 function toggleDataImport() {
     importDataTog.value = !importDataTog.value;
 }
 
+function resetTraceName() {
+    traceName.value = "";
+}
+
+function resetDotSize() {
+    dotSize.value = 5;
+}
+
+// Reset variables to default. Clean work space.
+function resetChart() {
+    chartData.value = [];
+    resetTraceName();
+    resetDotSize();
+}
+
 // Chart data management:
-// Import data, select dataset
+// Import data, select dataset, 1, User clicks and selects Dataset
 async function importData() {
     datasetLoad.value = true;
 
-    importDataTog.value = !importDataTog.value;
+    toggleDataImport();
     const datasets = await fetchDatasets();
     selectDataset.value = datasets.map((item) => ({
         id: item.id,
@@ -46,7 +59,7 @@ async function importData() {
     datasetLoad.value = false;
 }
 
-// Fetch categories from selected dataset
+// Fetch categories from selected dataset, 2, User selects the categroy from dataset
 async function getCategories(id: number) {
     // set div visibility
     showCategory.value = true;
@@ -62,10 +75,9 @@ async function getCategories(id: number) {
     catLoad.value = false;
 }
 
-// Fetch category data and timestamps
+// Fetch category data and timestamps, 3, data from the selected category is fetched
 async function getCategoryData(id: number) {
-    // reset chartData to be empty
-    chartData.value = [];
+    toggleDataImport();
 
     const data = await fetchPlots(id);
     const xAxis = [];
@@ -81,9 +93,15 @@ async function getCategoryData(id: number) {
         xAxis,
         yAxis,
         graphType.value,
-        "MyChart",
+        traceName.value,
+        {
+            size: dotSize.value,
+        },
     );
-    chartData.value = [trace];
+    chartData.value = [...chartData.value, trace];
+
+    // Reset Trace Name
+    resetTraceName();
 }
 
 async function fetchPlots(id: number) {
@@ -138,6 +156,7 @@ const layout = computed(() => ({
     title: { text: graphTitle.value },
     xaxis: { title: { text: xTitle.value } },
     yaxis: { title: { text: yTitle.value } },
+    mode: "markers",
     autosize: true,
     responsive: true,
 }));
@@ -233,18 +252,14 @@ const chartData = ref(<Datatrace[]>[]);
                         </option>
                     </select>
                 </div>
-                <div
-                    class="border-b-green-400 m-1 rounded shadow bg-white flex flex-row items-center"
+                <button
+                    class="m-1 bg-white rounded shadow"
+                    aria-label="Import data from database "
+                    @click="importData"
                 >
-                    <button
-                        class="m-1"
-                        aria-label="Import data from database"
-                        @click="importData"
-                    >
-                        <i class="pi pi-database"></i>
-                    </button>
-                    <i class="pi pi-angle-right"></i>
-                </div>
+                    <i class="pi pi-database p-1"></i>
+                    <i class="pi pi-angle-right p-1"></i>
+                </button>
             </nav>
             <div
                 v-if="filter"
@@ -285,17 +300,59 @@ const chartData = ref(<Datatrace[]>[]);
                             aria-label="Close"
                             @click="toggleDataImport"
                         >
-                            <i class="pi pi-times"></i>
+                            <i class="pi pi-times text-lg p-1"></i>
                         </button>
                     </div>
-                    <div id="dataset" class="p-4 shadow-md bg-gray-50">
+                    <div
+                        v-if="importDataTog"
+                        id="createNewTrace"
+                        class="flex flex-row items-center justify-center m-1"
+                    >
+                        <input
+                            id="nameNewTrace"
+                            v-model="traceName"
+                            class="mx-1 border-gray-600 border shadow rounded-xl p-1"
+                            type="text"
+                            name="New trace name... "
+                            placeholder="New trace name..."
+                            aria-label="Add trace name"
+                        />
+                        <label for="plotSize" class="mx-1">Plot size: </label>
+                        <input
+                            v-model="dotSize"
+                            class="mx-1 border-gray-600 border shadow rounded-xl p-1"
+                            type="number"
+                            id="plotSize"
+                            placeholder="5"
+                            aria-label="Plot size"
+                        />
+                    </div>
+                    <div id="dataset" class="p-4 bg-gray-50">
                         <div
                             v-if="datasetLoad"
-                            class="flex flex-row items-center justify-center m-3"
+                            class="flex flex-row items-center justify-center m-3 overflow-y-scroll max-h-75"
                         >
-                            <p>Loading...</p>
-                            <br />
-                            <i class="pi pi-hourglass"></i>
+                            <!--                            Provided by Fergus, taken from https://git.cardiff.ac.uk/c22026756/68b-cardiff-earth/-/merge_requests/7#e05d7d656aa21d00d562fe408032f60e87d33639-->
+                            <svg
+                                class="animate-spin h-5 w-5 inline-block mr-2"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    class="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                ></circle>
+                                <path
+                                    class="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                ></path>
+                            </svg>
                         </div>
                         <ul class="space-y-2">
                             <li
@@ -315,15 +372,32 @@ const chartData = ref(<Datatrace[]>[]);
                     <div
                         v-if="showCategory"
                         id="category"
-                        class="mt-4 p-4 rounded-lg bg-gray-50"
+                        class="mt-4 p-4 rounded-lg bg-gray-50 overflow-y-scroll max-h-75"
                     >
                         <div
                             v-if="catLoad"
                             class="flex flex-row items-center justify-center m-3"
                         >
-                            <p>Loading...</p>
-                            <br />
-                            <i class="pi pi-hourglass"></i>
+                            <svg
+                                class="animate-spin h-5 w-5 inline-block mr-2"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    class="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                ></circle>
+                                <path
+                                    class="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                ></path>
+                            </svg>
                         </div>
                         <ul class="space-y-2">
                             <li
@@ -339,6 +413,19 @@ const chartData = ref(<Datatrace[]>[]);
                                 </button>
                             </li>
                         </ul>
+                    </div>
+                    <div
+                        id="saveClose"
+                        class="flex items-center justify-center m-1"
+                    >
+                        <button
+                            class="border rounded bg-gray-300-400 p-1"
+                            aria-label="Close"
+                            @click="resetChart"
+                        >
+                            <i class="pi pi-undo text-lg m-1"></i>
+                            Reset Chart
+                        </button>
                     </div>
                 </div>
             </div>
