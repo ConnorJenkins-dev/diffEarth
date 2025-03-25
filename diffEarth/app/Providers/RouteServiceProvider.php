@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -29,7 +31,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
+            Route::middleware(['api', 'auth:sanctum'])
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
@@ -37,7 +39,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        Route::aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
+        //makes it not a pain in the ass to write the whole thing
+        Route::aliasMiddleware('role', RoleMiddleware::class);
 
         Route::middleware(['auth:sanctum', EnsureFrontendRequestsAreStateful::class])->group(function () {
             Route::get('/user', function (Request $request) {
