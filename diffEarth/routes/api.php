@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\AuthController;
+use App\Http\Middleware\RoleMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +27,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:sanctum')->get('/user/roles', [UserController::class, 'getRoles']);
+
 Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store'])
     ->name('upload.store');
 
@@ -35,6 +40,20 @@ Route::post('/biographyText/{id}', [App\Http\Controllers\AboutUsController::clas
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->user());
+    });
+
+    Route::get('/dashboard', function () {
+        return response()->json(['message' => 'Dashboard for authenticated users']);
+    });
+
+    Route::middleware(['role:admin'])->get('/admin', function () {
+        return response()->json(['message' => 'Welcome Admin']);
+    });
 });
 
 Route::get('/dataset', [App\Http\Controllers\GraphDataController::class, 'getAllDatasets'])
@@ -60,3 +79,11 @@ Route::get('/columns/{columnId}/datapoints', [App\Http\Controllers\GraphDataCont
 Route::get('/columns/{columnId}/data+stamp', [App\Http\Controllers\GraphDataController::class, 'getDataAndTimestamp']);
 
 Route::post('/send-email', [EmailController::class, 'sendEmail']);
+
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+Route::middleware(['auth:sanctum', 'role:collaborator'])->get('/about', function () {
+    return response()->json(['message' => 'Welcome to about us page!']);
+});

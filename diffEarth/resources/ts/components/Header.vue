@@ -1,6 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import LoginComponent from "./LoginComponent.vue";
 import { translations } from "../languages/translations.ts";
+
+const showLogin = ref(false);
+
+const userRole = ref(localStorage.getItem("role") || "user");
+
+const isAdmin = computed(() => userRole.value === "admin");
+
+const isLoggedIn = ref(!!localStorage.getItem("token"));
+
+const loginComponent = ref(null);
+
+const handleLogout = () => {
+    if (loginComponent.value) {
+        loginComponent.value.logout();
+    }
+};
+
+const updateLoginStatus = () => {
+    isLoggedIn.value = !!localStorage.getItem("token");
+    userRole.value = localStorage.getItem("role") || "user";
+};
 
 const getCookie = (name: string): string | null => {
     const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
@@ -23,10 +45,20 @@ const toggleLanguage = () => {
         <div
             class="absolute top-2 left-4 text-4xl font-bold text-[var(--greyBlue)]"
         >
-            <router-link to="/home">Team CHIL</router-link>
+            <div>
+                <router-link to="/home">Team CHIL</router-link>
+            </div>
+            <span
+                v-if="isLoggedIn"
+                class="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-sm text-gray-400"
+            >
+                {{ userRole }}
+            </span>
         </div>
-
         <div class="absolute bottom-2 right-4 flex gap-4">
+            <router-link v-if="isAdmin" to="/dashboard">
+                <div class="text-xl text-greyBlue underline">Dashboard</div>
+            </router-link>
             <router-link to="/map">
                 <div
                     class="text-xl text-greyBlue underline"
@@ -75,14 +107,29 @@ const toggleLanguage = () => {
                     {{ translations[currentLanguage].pricing }}
                 </div>
             </router-link>
-            <router-link to="/login">
-                <div
-                    class="text-xl text-[var(--greyBlue)] underline"
-                    :aria-label="translations[currentLanguage].login"
+            <div class="relative">
+                <button
+                    v-if="isLoggedIn"
+                    @click="handleLogout"
+                    class="bg-red-500 text-white p-2 rounded"
                 >
-                    {{ translations[currentLanguage].login }}
-                </div>
-            </router-link>
+                    Log out
+                </button>
+                <button
+                    v-else
+                    @click="showLogin = true"
+                    class="bg-blue-500 text-white p-2 rounded"
+                >
+                    Log in
+                </button>
+            </div>
+
+            <LoginComponent
+                ref="loginComponent"
+                :showModal="showLogin"
+                @close="showLogin = false"
+                @logout="updateLoginStatus"
+            />
         </div>
 
         <!-- Language Toggle Button -->

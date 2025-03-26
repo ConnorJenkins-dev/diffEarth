@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Collaborator;
 use App\Models\Column;
 use App\Models\Datapoint;
 use App\Models\Dataset;
@@ -18,10 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
 
         Dataset::factory()->count(2)->create();
         Row::factory()->count(5)->create([
@@ -44,6 +39,9 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-        Collaborator::factory()->create();
+        $this->call([
+            RoleSeeder::class,
+            TestUserSeeder::class
+        ]);
     }
 }
