@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 class ProcessCsvJob implements ShouldQueue
 {
@@ -100,6 +101,11 @@ class ProcessCsvJob implements ShouldQueue
                     throw new \Exception('One or more rows do not have a timestamp.');
                 }
 
+                // Handle weird date formatting
+                $rowTimestamp = preg_replace('/[\x00-\x1F\x7F]/u', '', $rowTimestamp);
+                $rowTimestamp = preg_replace('/\s+/', ' ', $rowTimestamp);
+                $rowTimestamp = str_replace('/', '-', $rowTimestamp);
+
                 $row = Row::create([
                     'dataset_id' => $dataset->id,
                     'timestamp' => Carbon::parse($rowTimestamp)->toDateTimeString(),
@@ -126,6 +132,7 @@ class ProcessCsvJob implements ShouldQueue
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
+            Log::error($e->getMessage());
             $this->fail($e->getMessage());
         } finally {
             if (file_exists($fullPath)) {
