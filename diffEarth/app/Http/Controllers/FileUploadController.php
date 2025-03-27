@@ -21,8 +21,9 @@ class FileUploadController extends Controller
         $timestampedFilename = now()->format('YmdHis') . '_' . $file->getClientOriginalName();
         $file->move($destinationPath, $timestampedFilename);
         $relativePath = 'uploads/' . $timestampedFilename;
+        $locationId = $request->input('location');
 
-        ProcessCsvJob::dispatch($relativePath, $timestampedFilename);
+        ProcessCsvJob::dispatch($relativePath, $timestampedFilename, $locationId);
 
         return response()->json([
             'message' => 'File uploaded successfully and is being processed in the background.'

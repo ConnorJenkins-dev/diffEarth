@@ -24,14 +24,16 @@ class ProcessCsvJob implements ShouldQueue
 
     public string $filePath;
     public string $originalName;
+    public int $locationId;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(string $filePath, string $originalName)
+    public function __construct(string $filePath, string $originalName, int $locationId)
     {
         $this->filePath = $filePath;
         $this->originalName = $originalName;
+        $this->locationId = $locationId;
     }
 
     /**
@@ -52,6 +54,7 @@ class ProcessCsvJob implements ShouldQueue
             $dataset = Dataset::create(
                 [
                     'dataset_name' => $this->originalName, // Includes timestamp to delineate
+                    'location_id' => $this->locationId, // Adds locationId
                 ],
             );
 

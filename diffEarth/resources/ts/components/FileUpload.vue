@@ -7,6 +7,9 @@ const selectedFile = ref(null);
 const { showToast } = useToast();
 const uploading = ref(false);
 
+const selectedLocation = ref("");
+const isPublic = ref(false);
+
 function openModal() {
     showModal.value = true;
 }
@@ -46,6 +49,8 @@ async function handleUpload() {
 
     const formData = new FormData();
     formData.append("file", selectedFile.value);
+    formData.append("location", selectedLocation.value);
+    formData.append("isPublic", isPublic.value);
 
     try {
         const response = await fetch("/api/upload", {
@@ -115,11 +120,14 @@ async function handleUpload() {
                             />
                         </label>
                         <div class="flex items-center justify-center">
-                            <select class="mx-2 border border-gray-300 rounded">
-                                <option value="1">Location 1</option>
-                                <option value="2">Location 2</option>
-                                <option value="3">Location 3</option>
-                                <option value="4">Add a location</option>
+                            <select
+                                class="mx-2 border border-gray-300 rounded"
+                                v-model="selectedLocation"
+                                name="location"
+                                required
+                            >
+                                <option value="">Select a category</option>
+                                <option value="1">Category 1</option>
                             </select>
                             <div
                                 class="flex items-center mx-2 border border-gray-300 rounded"
@@ -127,6 +135,7 @@ async function handleUpload() {
                                 <label for="isPublic">Public</label>
                                 <input
                                     id="isPublic"
+                                    v-model="isPublic"
                                     class="m-2"
                                     type="checkbox"
                                 />
