@@ -114,6 +114,24 @@ async function handleUpload() {
                                 @change="onFileChange"
                             />
                         </label>
+                        <div class="flex items-center justify-center">
+                            <select class="mx-2 border border-gray-300 rounded">
+                                <option value="1">Location 1</option>
+                                <option value="2">Location 2</option>
+                                <option value="3">Location 3</option>
+                                <option value="4">Add a location</option>
+                            </select>
+                            <div
+                                class="flex items-center mx-2 border border-gray-300 rounded"
+                            >
+                                <label for="isPublic">Public</label>
+                                <input
+                                    id="isPublic"
+                                    class="m-2"
+                                    type="checkbox"
+                                />
+                            </div>
+                        </div>
 
                         <div class="flex justify-end space-x-2">
                             <button
@@ -147,8 +165,8 @@ async function handleUpload() {
                             </button>
                             <button
                                 type="button"
-                                @click="closeModal"
                                 class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                                @click="closeModal"
                             >
                                 Cancel
                             </button>

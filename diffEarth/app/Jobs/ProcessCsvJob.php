@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 class ProcessCsvJob implements ShouldQueue
 {
@@ -126,6 +127,7 @@ class ProcessCsvJob implements ShouldQueue
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
+            Log::info($e->getMessage());
             $this->fail($e->getMessage());
         } finally {
             if (file_exists($fullPath)) {
