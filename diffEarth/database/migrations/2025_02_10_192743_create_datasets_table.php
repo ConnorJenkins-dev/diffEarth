@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('dataset_name');
             $table->json('metadata')->nullable();
+            $table->unsignedInteger('location_id');
         });
     }
 

@@ -13,6 +13,7 @@ class Dataset extends Model
     protected $fillable = [
         'dataset_name',
         'metadata',
+        'location_id',
     ];
 
     public function columns()
@@ -23,5 +24,10 @@ class Dataset extends Model
     public function rows()
     {
         return $this->hasMany(Row::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }

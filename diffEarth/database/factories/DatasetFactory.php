@@ -21,7 +21,8 @@ class DatasetFactory extends Factory
             'metadata' => json_encode([
                 'description' => $this->faker->sentence(),
                 'source' => $this->faker->url(),
-            ])
+            ]),
+            'location_id' => $this->faker->numberBetween(1, 10),
         ];
     }
 }
