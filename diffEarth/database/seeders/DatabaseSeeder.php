@@ -41,7 +41,8 @@ class DatabaseSeeder extends Seeder
         }
         $this->call([
             RoleSeeder::class,
-            TestUserSeeder::class
+            TestUserSeeder::class,
+            DeploymentSeeder::class,
         ]);
     }
 }

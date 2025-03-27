@@ -7,6 +7,7 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\DeploymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,13 @@ use App\Http\Middleware\RoleMiddleware;
 |
 */
 
+
+
 // route for rendering datasets
 Route::get('/datasets', [DatasetController::class, 'index']);
 
+// route for adding deployments
+Route::apiResource('deployments', DeploymentController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
