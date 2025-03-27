@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const form = ref({
     location: "",
@@ -8,11 +8,26 @@ const form = ref({
     emails: "",
 });
 
+const columns = ref([]); // Store all columns
+
+// Fetch all columns on component mount
+const fetchColumns = async () => {
+    try {
+        const response = await fetch("/api/columns"); // Adjust the API endpoint if needed
+        if (!response.ok) throw new Error("Failed to fetch columns");
+        columns.value = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// Fetch columns when component loads
+onMounted(fetchColumns);
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const validateEmails = (emailString) => {
     if (!emailString) return "Please enter at least one email.";
 
-    // Detect multiple @ symbols in the entire input without commas for lists of emails
     if (
         emailString.includes("@@") ||
         (emailString.match(/@/g) || []).length > emailString.split(",").length
@@ -21,14 +36,12 @@ const validateEmails = (emailString) => {
     }
 
     const emails = emailString.split(",").map((email) => email.trim());
-
     for (let email of emails) {
         if (!emailRegex.test(email)) {
             return `Invalid email: "${email}". Please enter a valid email.`;
         }
     }
-
-    return null; // No errors
+    return null;
 };
 
 const sendEmail = async () => {
@@ -41,9 +54,7 @@ const sendEmail = async () => {
     try {
         const response = await fetch("/api/send-email", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 location: form.value.location,
                 column: form.value.column,
@@ -54,13 +65,10 @@ const sendEmail = async () => {
             }),
         });
 
-        const data = await response.json(); // Parse JSON response
-
-        if (!response.ok) {
+        const data = await response.json();
+        if (!response.ok)
             throw new Error(data.message || "Failed to send email");
-        }
-
-        alert(data.message); // Show success message
+        alert(data.message);
     } catch (error) {
         console.error("Error sending email:", error);
         alert(error.message || "Failed to send email");
@@ -83,13 +91,21 @@ const sendEmail = async () => {
             </div>
 
             <div class="mb-3">
-                <label class="block font-medium">Column</label>
-                <input
-                    type="text"
+                <label class="block font-medium">Select Column</label>
+                <select
                     v-model="form.column"
                     class="w-full border rounded p-2"
                     required
-                />
+                >
+                    <option value="" disabled>Select a column</option>
+                    <option
+                        v-for="column in columns"
+                        :key="column.id"
+                        :value="column.name"
+                    >
+                        {{ column.name }}
+                    </option>
+                </select>
             </div>
 
             <div class="mb-3">
