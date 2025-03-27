@@ -21,6 +21,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function getUser(Request $request)
+    {
+        return response()->json([
+            'user' => $request->user()->only(['id', 'name', 'email']),
+        ]);
+    }
+
     public function getAllEmails()
     {
         $emails = User::pluck('email'); // Get all user emails

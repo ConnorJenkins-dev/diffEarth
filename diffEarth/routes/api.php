@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:sanctum')->get('/user-get', [UserController::class, 'getUser']);
+
 Route::middleware('auth:sanctum')->get('/user/roles', [UserController::class, 'getRoles']);
 
 Route::post('/upload', [App\Http\Controllers\FileUploadController::class, 'store'])
@@ -103,6 +105,15 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware(['auth:sanctum', 'role:collaborator'])->get('/about', function () {
     return response()->json(['message' => 'Welcome to about us page!']);
 });
+
+Route::post('/post', [App\Http\Controllers\PostController::class, 'store'])
+    ->name('post.store');
+
+Route::get('/post', [App\Http\Controllers\PostController::class, 'getAllPosts'])
+    ->name('post.index');
+
+Route::get('/post/{id}', [App\Http\Controllers\PostController::class, 'getPostById'])
+    ->name('post.show');
 
 Route::get('/users/emails', [UserController::class, 'getAllEmails']);
 

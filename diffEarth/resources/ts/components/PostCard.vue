@@ -29,9 +29,10 @@ defineProps({
 
 <template>
     <div
-        class="flex flex-col border-1 border-gray-200 rounded max-w-150 m-3 shadow-md"
+        class="flex flex-col border-1 border-gray-200 rounded w-150 m-3 shadow-md"
     >
         <img
+            v-if="imgMain"
             class="rounded-tr-md rounded-tl-md max-h-100"
             :src="imgMain"
             alt="main"

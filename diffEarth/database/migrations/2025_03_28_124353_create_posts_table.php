@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rows', function (Blueprint $table) {
-            $table->id();
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
             $table->timestamps();
-            $table->timestamp('timestamp')->nullable();
-            $table->foreignId('dataset_id')->references('id')->on('datasets')->onDelete('cascade');
+            $table->string('title');
+            $table->mediumText('content');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->mediumText('image_base64')->nullable();
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rows');
+        Schema::dropIfExists('posts');
     }
 };
