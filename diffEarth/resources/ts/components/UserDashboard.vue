@@ -9,6 +9,7 @@ import { GridLayout, GridItem } from "grid-layout-plus";
 import AddDeployment from "./AddDeployment.vue";
 import { onMounted, ref, computed, nextTick, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
+import Weather from "./Weather.vue";
 
 const unsaved = ref(false);
 const processingUpload = ref(false);

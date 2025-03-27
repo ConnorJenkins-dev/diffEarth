@@ -15,6 +15,27 @@ class DeploymentController extends Controller
         return response()->json(Deployment::all());
     }
 
+
+    public function getLatLongForDeployment($uuid)
+    {
+        Log::info('UUID received: ' . $uuid);
+
+        $deployment = Deployment::where('uid', $uuid)->first();
+
+        if (!$deployment) {
+            return response()->json(['message' => 'Deployment not found'], 404);
+        }
+
+        // Assuming latitude and longitude are stored as 'lat' and 'long' in the deployment model
+        // Assuming the columns in the database are named latitude and longitude
+        $latLong = [
+            'lat' => $deployment->latitude, // Change 'lat' to 'latitude'
+            'long' => $deployment->longitude, // Change 'long' to 'longitude'
+        ];
+
+        Log::info($latLong);
+        return response()->json($latLong);
+    }
     public function store(Request $request)
     {
         try {

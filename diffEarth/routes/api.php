@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\DeploymentController;
@@ -24,6 +25,8 @@ use App\Http\Controllers\DeploymentController;
 
 // route for rendering datasets
 Route::get('/datasets', [DatasetController::class, 'index']);
+// routes/api.php
+Route::get('/deployments/{uuid}/latlong', [DeploymentController::class, 'getLatLongForDeployment']);
 
 Route::get('/deployments/in-progress', [App\Http\Controllers\DeploymentController::class, 'inProgressIndex'])
     ->name('deployments.in-progress-index');
@@ -133,3 +136,5 @@ Route::options('/{any}', function () {
     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 })->where('any', '.*');
+
+Route::get('/weather', [WeatherController::class, 'getWeather']);

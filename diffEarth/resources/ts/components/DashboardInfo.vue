@@ -3,6 +3,7 @@ import DashboardButton from "./DashboardButton.vue";
 import { defineEmits, computed, ref, watch, nextTick } from "vue";
 import EmailForm from "./EmailForm.vue";
 import { useToast } from "../composables/useToast.ts";
+import Weather from "./Weather.vue";
 
 const { showToast } = useToast();
 
@@ -116,6 +117,7 @@ const warnSave = () => {
             {{ deploymentInfo }}
         </h2>
     </div>
+    <Weather />
     <div class="border-t border-t-gray-800 my-4 w-3/4" />
     <!-- Email Form -->
     <div
@@ -131,6 +133,7 @@ const warnSave = () => {
                 <span v-if="!emailFormIsOpen" class="pl-3 pi pi-chevron-down" />
                 <span v-else class="pl-3 pi pi-chevron-up" />
             </button>
+
             <transition name="emailAccordion" @enter="enter" @leave="leave">
                 <div
                     v-if="emailFormIsOpen"
