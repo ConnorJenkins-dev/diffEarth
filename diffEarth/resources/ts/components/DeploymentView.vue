@@ -10,7 +10,7 @@
                     <input
                         v-model="searchQuery"
                         type="text"
-                        placeholder="Search by name..."
+                        :placeholder="t.searchByName"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700"
                     />
                     <span
@@ -58,7 +58,7 @@
                         @click="goToLocation(deployment)"
                         class="bg-indigo-600 text-white px-4 py-1 rounded-md hover:bg-indigo-700"
                     >
-                        Go to Location
+                        {{ t.goToLocation }}
                     </button>
                     <button
                         @click="deleteDeployment(deployment)"
@@ -74,7 +74,7 @@
                 v-if="filteredDeployments.length === 0"
                 class="text-center text-gray-500"
             >
-                <p>No deployments found.</p>
+                <p>{{ t.noDeploymentsFound }}</p>
             </div>
         </main>
     </div>
@@ -82,6 +82,10 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
+
+import { useTranslation } from "../composables/useTranslation";
+
+const { t } = useTranslation();
 
 // Props to receive the globe component's reference
 const props = defineProps({

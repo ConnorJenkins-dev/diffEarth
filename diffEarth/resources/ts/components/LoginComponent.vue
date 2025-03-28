@@ -5,7 +5,7 @@
     >
         <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative z-50">
             <h2 class="text-2xl font-semibold mb-4 text-stone-700">
-                {{ isLoggedIn ? "Logout" : "Login" }}
+                {{ isLoggedIn ? t.logout : t.login }}
             </h2>
 
             <!-- Login Form -->
@@ -13,14 +13,14 @@
                 <input
                     type="email"
                     v-model="email"
-                    placeholder="Email"
+                    :placeholder="t.email"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
                 <input
                     type="password"
                     v-model="password"
-                    placeholder="Password"
+                    :placeholder="t.password"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
@@ -29,32 +29,32 @@
                     type="submit"
                     class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                 >
-                    Login
+                    {{ t.login }}
                 </button>
             </form>
 
             <!-- Logout Message -->
             <div v-else>
                 <p class="text-gray-700 mb-4">
-                    You are logged in as <strong>{{ userRole }}</strong
+                    {{ t.YouAreloggedInAs }} <strong>{{ userRole }}</strong
                     >.
                 </p>
                 <button
                     @click="logout"
                     class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600"
                 >
-                    Logout
+                    {{ t.logout }}
                 </button>
             </div>
 
             <!-- Sign Up Button -->
             <p class="text-center mt-4 text-gray-600 text-sm">
-                Don't have an account?
+                {{ t.dontHaveAccount }}
                 <button
                     @click="openSignup"
                     class="text-blue-500 hover:underline"
                 >
-                    Sign Up
+                    {{ t.signUp }}
                 </button>
             </p>
 
@@ -63,7 +63,7 @@
                 @click="closeModal"
                 class="mt-4 w-full bg-gray-300 p-2 rounded hover:bg-gray-400 text-stone-700"
             >
-                Close
+                {{ t.close }}
             </button>
 
             <p v-if="errorMessage" class="text-red-500 mt-2">
@@ -76,6 +76,9 @@
 <script setup>
 import { ref, computed, defineProps, defineEmits } from "vue";
 
+import { useTranslation } from "../composables/useTranslation";
+
+const { t } = useTranslation();
 const props = defineProps({ showModal: Boolean });
 const emit = defineEmits(["close", "logout", "openSignup"]);
 

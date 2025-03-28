@@ -138,14 +138,14 @@ const toggleLanguage = () => {
                     @click="handleLogout"
                     class="bg-red-500 text-white p-2 rounded"
                 >
-                    Log out
+                    {{ translations[currentLanguage].logout }}
                 </button>
                 <button
                     v-else
                     @click="showLogin = true"
                     class="bg-blue-500 text-white p-2 rounded"
                 >
-                    Log in
+                    {{ translations[currentLanguage].login }}
                 </button>
             </div>
 

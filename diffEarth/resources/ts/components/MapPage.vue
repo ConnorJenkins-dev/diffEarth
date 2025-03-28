@@ -5,6 +5,9 @@ import GlobeComponent from "./GlobeComponent.vue";
 import GlobeComponent2 from "./GlobeComponent2.vue";
 import DeploymentView from "./DeploymentView.vue";
 import AddDeployment from "./AddDeployment.vue";
+import { useTranslation } from "../composables/useTranslation"; // Importing translation
+
+const { t } = useTranslation(); // Using translation
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -47,13 +50,13 @@ function goToDeployment(uuid) {
                         @click="loadGlobeComponent"
                         class="bg-indigo-600 text-white px-4 py-2 rounded-md mr-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
-                        Poly Globe
+                        {{ t.polyGlobe }}
                     </button>
                     <button
                         @click="loadGlobeComponent2"
                         class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
-                        Map Globe
+                        {{ t.mapGlobe }}
                     </button>
                 </div>
             </aside>

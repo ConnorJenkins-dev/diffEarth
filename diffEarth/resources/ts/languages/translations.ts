@@ -8,6 +8,26 @@ type Translations = {
         contactUs: string;
         pricing: string;
         login: string;
+        logout: string;
+        //login
+
+        YouAreloggedInAs: string;
+
+        dontHaveAccount: string;
+
+        createAccount: string;
+        fullName: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+        signUp: string;
+        close: string;
+        invalidEmail: string;
+        emailInUse: string;
+        passwordShort: string;
+        passwordMismatch: string;
+        registrationFailed: string;
+
         //UserDashboard
         button1: string;
         button2: string;
@@ -71,6 +91,14 @@ type Translations = {
         newTraceName: string;
         plotSize: string;
         biography: string;
+
+        // Deployment.vue
+        searchPlaceholder: string;
+        goToLocation: string;
+        noDeploymentsFound: string;
+        //MapPage.vue
+        polyGlobe: string;
+        mapGlobe: string;
     };
 };
 
@@ -83,7 +111,24 @@ export const translations: Translations = {
         resources: "Resources",
         contactUs: "Contact Us",
         pricing: "Pricing",
-        login: "Log In",
+        login: "Log in",
+        logout: "Log out",
+        //login
+        close: "Close",
+        YouAreloggedInAs: "You are logged in as ",
+        email: "Email",
+        password: "Password",
+        dontHaveAccount: "Don't have an account?",
+        signUp: "Sign Up",
+        createAccount: "Create an Account",
+        fullName: "Full Name",
+        confirmPassword: "Confirm Password",
+        invalidEmail: "Invalid email format. Please enter a valid email.",
+        emailInUse: "Email already in use.",
+        passwordShort:
+            "Password and Confirm Password must be at least 6 characters long.",
+        passwordMismatch: "Password and Confirm Password do not match.",
+        registrationFailed: "Registration failed. Please try again.",
         //UserDashboard
         button1: "Button 1",
         button2: "Button 2",
@@ -148,6 +193,14 @@ export const translations: Translations = {
         newTraceName: "New trace name...",
         plotSize: "Plot size: ",
         biography: "Biography",
+
+        // Deployment.vue
+        searchPlaceholder: "Search by name...",
+        goToLocation: "Go to Location",
+        noDeploymentsFound: "No deployments found.",
+        //mapPage.vue
+        polyGlobe: "Poly Globe", // Add translation for Poly Globe
+        mapGlobe: "Map Globe",
     },
     cy: {
         map: "Gweiadur", //Header
@@ -157,6 +210,24 @@ export const translations: Translations = {
         contactUs: "Cysylltwch â Ni",
         pricing: "Prisiau",
         login: "Mewngofnodi",
+        logout: "Allgofnodi",
+        //login
+        close: "Cau",
+        YouAreloggedInAs: "Rydych chi wedi mewngofnodi fel ",
+        email: "Ebost",
+        password: "Cyfrinair",
+        dontHaveAccount: "Heb gofnod?",
+        signUp: "Cofrestru",
+        createAccount: "Creu Cyfrif",
+        fullName: "Enw Llawn",
+        confirmPassword: "Cadarnhau Cyfrinair",
+        invalidEmail: "Fformat ebost annilys. Rhowch ebost dilys.",
+        emailInUse: "Mae'r ebost yn cael ei ddefnyddio eisoes.",
+        passwordShort:
+            "Rhaid i'r cyfrinair a'r cadarnhad cyfrinair fod o leiaf 6 nod.",
+        passwordMismatch:
+            "Nid yw'r cyfrinair a'r cadarnhad cyfrinair yn cyfateb.",
+        registrationFailed: "Methu â chofrestru. Rhowch gynnig arall.",
         //UserDashboard
         button1: "Botwm 1",
         button2: "Botwm 2",
@@ -222,5 +293,13 @@ export const translations: Translations = {
         newTraceName: "Enw olrhain newydd...",
         plotSize: "Maint y plot: ",
         biography: "Bywgraffiad",
+
+        // Deployment.vue
+        searchPlaceholder: "Chwilio gan enw...",
+        goToLocation: "Ewch i'r Lleoliad",
+        noDeploymentsFound: "Dim deploymentau wedi'u canfod.",
+        //MapPage.vue
+        polyGlobe: "Poly Glofa",
+        mapGlobe: "Glofa Map",
     },
 };

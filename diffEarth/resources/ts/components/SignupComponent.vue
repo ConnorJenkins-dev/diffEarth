@@ -5,7 +5,7 @@
     >
         <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative z-50">
             <h2 class="text-2xl font-semibold mb-4 text-stone-700">
-                Create an Account
+                {{ t.createAccount }}
             </h2>
 
             <!-- Signup Form -->
@@ -13,28 +13,28 @@
                 <input
                     type="text"
                     v-model="name"
-                    placeholder="Full Name"
+                    :placeholder="t.fullName"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
                 <input
                     type="email"
                     v-model="email"
-                    placeholder="Email"
+                    :placeholder="t.email"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
                 <input
                     type="password"
                     v-model="password"
-                    placeholder="Password"
+                    :placeholder="t.password"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
                 <input
                     type="password"
                     v-model="confirmPassword"
-                    placeholder="Confirm Password"
+                    :placeholder="t.confirmPassword"
                     required
                     class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
@@ -43,7 +43,7 @@
                     type="submit"
                     class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
                 >
-                    Sign Up
+                    {{ t.signUp }}
                 </button>
             </form>
 
@@ -57,7 +57,7 @@
                 @click="closeModal"
                 class="mt-4 w-full bg-gray-300 p-2 rounded hover:bg-gray-400 text-stone-700"
             >
-                Close
+                {{ t.close }}
             </button>
         </div>
         <!-- Toast Notification -->
@@ -73,7 +73,9 @@
 
 <script setup>
 import { ref, defineProps, defineEmits } from "vue";
+import { useTranslation } from "../composables/useTranslation";
 
+const { t } = useTranslation();
 const props = defineProps({ showModal: Boolean });
 const emit = defineEmits(["close", "registered"]);
 
@@ -113,8 +115,7 @@ function handleRegisterSuccess(response) {
 
 const register = async () => {
     if (!emailPattern.test(email.value)) {
-        toastMessage.value =
-            "Invalid email format. Please enter a valid email.";
+        toastMessage.value = t.invalidEmail;
         showToast.value = true;
         setTimeout(() => {
             showToast.value = false;
@@ -126,7 +127,7 @@ const register = async () => {
 
     if (emailExists) {
         console.error("Email already in use");
-        toastMessage.value = "Email already in use";
+        toastMessage.value = t.emailInUse;
         showToast.value = true;
         setTimeout(() => {
             showToast.value = false;
@@ -136,8 +137,7 @@ const register = async () => {
 
     // Check if password and confirm password match and are at least 6 characters long
     if (password.value.length < 6 || confirmPassword.value.length < 6) {
-        toastMessage.value =
-            "Password and Confirm Password must be at least 6 characters long.";
+        toastMessage.value = t.passwordShort;
         showToast.value = true;
         setTimeout(() => {
             showToast.value = false;
@@ -146,7 +146,7 @@ const register = async () => {
     }
 
     if (password.value !== confirmPassword.value) {
-        toastMessage.value = "Password and Confirm Password do not match.";
+        toastMessage.value = t.passwordMismatch;
         showToast.value = true;
         setTimeout(() => {
             showToast.value = false;
@@ -173,7 +173,7 @@ const register = async () => {
         } else {
             const errorData = await response.json(); // Read error body if response is not ok
             console.log(errorData);
-            throw new Error(errorData.message || "Registration failed.");
+            throw new Error(errorData.message || t.registrationFailed);
         }
     } catch (error) {
         console.error("Error:", error.message);
