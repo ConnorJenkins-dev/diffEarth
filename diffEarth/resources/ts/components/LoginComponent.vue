@@ -4,7 +4,7 @@
         class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative z-50">
-            <h2 class="text-2xl font-semibold mb-4">
+            <h2 class="text-2xl font-semibold mb-4 text-stone-700">
                 {{ isLoggedIn ? "Logout" : "Login" }}
             </h2>
 
@@ -15,14 +15,14 @@
                     v-model="email"
                     placeholder="Email"
                     required
-                    class="w-full p-2 mb-2 border rounded"
+                    class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
                 <input
                     type="password"
                     v-model="password"
                     placeholder="Password"
                     required
-                    class="w-full p-2 mb-2 border rounded"
+                    class="w-full p-2 mb-2 border rounded text-stone-700"
                 />
 
                 <button
@@ -47,10 +47,21 @@
                 </button>
             </div>
 
+            <!-- Sign Up Button -->
+            <p class="text-center mt-4 text-gray-600 text-sm">
+                Don't have an account?
+                <button
+                    @click="openSignup"
+                    class="text-blue-500 hover:underline"
+                >
+                    Sign Up
+                </button>
+            </p>
+
             <!-- Close Button -->
             <button
                 @click="closeModal"
-                class="mt-4 w-full bg-gray-300 p-2 rounded hover:bg-gray-400"
+                class="mt-4 w-full bg-gray-300 p-2 rounded hover:bg-gray-400 text-stone-700"
             >
                 Close
             </button>
@@ -63,21 +74,17 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, defineProps, defineEmits } from "vue";
 
 const props = defineProps({ showModal: Boolean });
-const emit = defineEmits(["close", "logout"]);
+const emit = defineEmits(["close", "logout", "openSignup"]);
 
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
-const router = useRouter();
 
-// Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem("token"));
 const userRole = computed(() => localStorage.getItem("role") || "User");
-// const userName = computed(() => localStorage.getItem('name') || '');
 
 const login = async () => {
     try {
@@ -99,11 +106,9 @@ const login = async () => {
         const data = await response.json();
         console.log("Login successful:", data);
 
-        // Store token and user role
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
 
-        // Refresh to update modal
         window.location.reload();
     } catch (error) {
         console.error("Login failed:", error.message);
@@ -129,13 +134,11 @@ const logout = async () => {
 
         console.log("Logout successful");
 
-        // Clear localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("role");
 
         emit("logout");
 
-        // Refresh the page to update UI
         window.location.reload();
     } catch (error) {
         console.error("Error logging out:", error.message);
@@ -144,14 +147,11 @@ const logout = async () => {
 
 defineExpose({ logout });
 
+const openSignup = () => {
+    emit("openSignup"); // Tell parent component to open signup modal
+};
+
 const closeModal = () => {
     emit("close");
 };
 </script>
-
-<style>
-/* Ensure the modal is always on top */
-.z-50 {
-    z-index: 50;
-}
-</style>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
@@ -92,3 +93,16 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware(['auth:sanctum', 'role:collaborator'])->get('/about', function () {
     return response()->json(['message' => 'Welcome to about us page!']);
 });
+
+Route::middleware([CorsMiddleware::class])->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::options('/{any}', function () {
+    return response()->json([]) // You can keep it empty, or return something if you prefer
+    ->header('Access-Control-Allow-Origin', '*') // Allow any origin, adjust if needed
+    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+})->where('any', '.*');
+
+Route::get('/emails', [UserController::class, 'getAllEmails']);

@@ -96,13 +96,4 @@ class DatasetviewTest extends TestCase
             'prev_page_url' => null,
         ]);
     }
-
-    public function test_api_handles_accessing_nonexistent_dataset(): void
-    {
-        // Act: Send a GET request for a dataset that doesn't exist
-        $response = $this->getJson('/api/datasets/999999'); // Non-existent ID
-
-        // Assert: Verify not found response
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-    }
 }

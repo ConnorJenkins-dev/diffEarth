@@ -2,8 +2,11 @@
 import { ref, computed } from "vue";
 import LoginComponent from "./LoginComponent.vue";
 import { translations } from "../languages/translations.ts";
+import SignupComponent from "./SignupComponent.vue";
 
 const showLogin = ref(false);
+
+const showSignup = ref(false);
 
 const userRole = ref(localStorage.getItem("role") || "user");
 
@@ -16,7 +19,14 @@ const loginComponent = ref(null);
 const handleLogout = () => {
     if (loginComponent.value) {
         loginComponent.value.logout();
+    } else {
+        console.error("loginComponent is not properly referenced");
     }
+};
+
+const openSignup = () => {
+    showLogin.value = false;
+    showSignup.value = true;
 };
 
 const updateLoginStatus = () => {
@@ -27,6 +37,11 @@ const updateLoginStatus = () => {
 const getCookie = (name: string): string | null => {
     const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
     return match ? match[2] : null;
+};
+
+const closeModals = () => {
+    showLogin.value = false;
+    showSignup.value = false;
 };
 
 const savedLanguage = getCookie("language");
@@ -127,9 +142,12 @@ const toggleLanguage = () => {
             <LoginComponent
                 ref="loginComponent"
                 :showModal="showLogin"
-                @close="showLogin = false"
+                @close="closeModals"
                 @logout="updateLoginStatus"
+                @openSignup="openSignup"
             />
+
+            <SignupComponent :showModal="showSignup" @close="closeModals" />
         </div>
 
         <!-- Language Toggle Button -->
