@@ -3,12 +3,11 @@ type Translations = {
     [key: string]: {
         map: string; //Header
         aboutUs: string;
-        community: string;
         resources: string;
         contactUs: string;
-        pricing: string;
         login: string;
         logout: string;
+        controlpnl: string;
         //login
 
         YouAreloggedInAs: string;
@@ -28,15 +27,6 @@ type Translations = {
         passwordMismatch: string;
         registrationFailed: string;
 
-        //UserDashboard
-        button1: string;
-        button2: string;
-        button3: string;
-        button4: string;
-        button5: string;
-        button6: string;
-        button7: string;
-        button8: string;
         // File Upload
         uploadCsv: string;
         uploadFile: string;
@@ -99,6 +89,46 @@ type Translations = {
         //MapPage.vue
         polyGlobe: string;
         mapGlobe: string;
+        //contact us
+        contactUsMessage: string;
+        contactUsTitle: string;
+        githubTitle: string;
+        githubDescription: string;
+        githubLinkText: string;
+        linkedinTitle: string;
+        linkedinDescription: string;
+        linkedinLinkText: string;
+        mastodonTitle: string;
+        mastodonDescription: string;
+        mastodonLinkText: string;
+        blueskyTitle: string;
+        blueskyDescription: string;
+        blueskyLinkText: string;
+        cardiffUniversityTitle: string;
+        cardiffUniversityDescription: string;
+        cardiffUniversityLinkText: string;
+        // Resources Page
+        resourcesTitle: string;
+        resourcesIntro: string;
+        cryoeggTitle: string;
+        cryowurstTitle: string;
+        cryoeggMadeTitle: string;
+        cryowurstMadeTitle: string;
+        cryoeggDeployment: string;
+        cryowurstDeployment: string;
+        surfaceReceiver: string;
+        //weather
+        temperature: string;
+
+        condition: string;
+        deployment: string;
+        descriptioncol: string;
+        editDashboard: string;
+        loadingWeather: string;
+        namecol: string;
+        publishShareDashboard: string;
+        setupEmailAlerts: string;
+        save: string;
     };
 };
 
@@ -107,12 +137,12 @@ export const translations: Translations = {
     en: {
         map: "Map", //Header
         aboutUs: "About Us",
-        community: "Community",
         resources: "Resources",
         contactUs: "Contact Us",
-        pricing: "Pricing",
-        login: "Log in",
+        login: "Log In",
         logout: "Log out",
+        controlpnl: "Control Panel",
+
         //login
         close: "Close",
         YouAreloggedInAs: "You are logged in as ",
@@ -129,15 +159,6 @@ export const translations: Translations = {
             "Password and Confirm Password must be at least 6 characters long.",
         passwordMismatch: "Password and Confirm Password do not match.",
         registrationFailed: "Registration failed. Please try again.",
-        //UserDashboard
-        button1: "Button 1",
-        button2: "Button 2",
-        button3: "Button 3",
-        button4: "Button 4",
-        button5: "Button 5",
-        button6: "Button 6",
-        button7: "Button 7",
-        button8: "Button 8",
         // File Upload
         uploadFile: "Upload File",
         uploadCsv: "Upload CSV",
@@ -201,16 +222,62 @@ export const translations: Translations = {
         //mapPage.vue
         polyGlobe: "Poly Globe", // Add translation for Poly Globe
         mapGlobe: "Map Globe",
+        //contact us
+        contactUsMessage:
+            "To reach out to us, please contact us via the following channels:",
+        contactUsTitle: "Contact Us",
+        githubTitle: "GitHub",
+        githubDescription:
+            "Use this link to view how to decode raw CHIL instrument data packets, create and maintain MariaDB databases for output from cryo* instruments, view and download CHIL instrument data, configure files for setting up Docker containers for testing MariaDB, regulating voltage, and more.",
+        githubLinkText: "Visit our GitHub Repository",
+        linkedinTitle: "LinkedIn",
+        linkedinDescription:
+            "We use LinkedIn to connect professionally, share updates, and engage with our community.",
+        linkedinLinkText: "Connect with us on LinkedIn",
+        mastodonTitle: "Mastodon",
+        mastodonDescription:
+            "Follow us on Mastodon for updates and discussions.",
+        mastodonLinkText: "Follow us on Mastodon",
+        blueskyTitle: "Bluesky",
+        blueskyDescription: "Join our conversations on Bluesky.",
+        blueskyLinkText: "Join us on Bluesky",
+        cardiffUniversityTitle: "Cardiff University",
+        cardiffUniversityDescription:
+            "Learn more about Dr. Michael Prior-Jones and his work at Cardiff University.",
+        cardiffUniversityLinkText: "Visit Cardiff University Profile",
+        // Resources Page
+        resourcesTitle: "Resources",
+        resourcesIntro:
+            "We design and test wireless instruments for observing glaciers and ice sheets.",
+        cryoeggTitle: "Cryoeggs to observe subglacial hydrology",
+        cryowurstTitle: "Cryowurst to observe the interior of a glacier",
+        cryoeggMadeTitle: "How is the Cryoegg made?",
+        cryowurstMadeTitle: "How is the Cryowurst made?",
+        cryoeggDeployment:
+            "We use Cryoeggs to observe subglacial hydrology. Using moulins, we deploy cryoeggs from the surface into the internal hydrological system.",
+        cryowurstDeployment:
+            "We drill boreholes, and deploy Cryowurst to measure the properties of ice within the column.",
+        surfaceReceiver:
+            "The instruments transmit data via a radio link to a receiver on the surface, which then sends the data back to us via satellite.",
+        temperature: "temperature",
+        condition: "Condition: ",
+        deployment: "Deployment: ",
+        descriptioncol: "Description: ",
+        editDashboard: "Edit Dashboard: ",
+        loadingWeather: "Loading weather...",
+        namecol: "Name: ",
+        publishShareDashboard: "Publish and Share Dashboard",
+        setupEmailAlerts: "Setup Email Alerts",
+        save: "Save",
     },
     cy: {
         map: "Gweiadur", //Header
         aboutUs: "Amdanom Ni",
-        community: "Cymuned",
         resources: "Adnoddau",
         contactUs: "Cysylltwch â Ni",
-        pricing: "Prisiau",
         login: "Mewngofnodi",
         logout: "Allgofnodi",
+        controlpnl: "Panel Rheoli",
         //login
         close: "Cau",
         YouAreloggedInAs: "Rydych chi wedi mewngofnodi fel ",
@@ -228,15 +295,6 @@ export const translations: Translations = {
         passwordMismatch:
             "Nid yw'r cyfrinair a'r cadarnhad cyfrinair yn cyfateb.",
         registrationFailed: "Methu â chofrestru. Rhowch gynnig arall.",
-        //UserDashboard
-        button1: "Botwm 1",
-        button2: "Botwm 2",
-        button3: "Botwm 3",
-        button4: "Botwm 4",
-        button5: "Botwm 5",
-        button6: "Botwm 6",
-        button7: "Botwm 7",
-        button8: "Botwm 8",
         // File Upload
         uploadFile: "Llwytho Ffeil",
         uploadCsv: "Llwytho CSV",
@@ -301,5 +359,53 @@ export const translations: Translations = {
         //MapPage.vue
         polyGlobe: "Poly Glofa",
         mapGlobe: "Glofa Map",
+        //contact us
+        contactUsMessage:
+            "I estyn allan atom, cysylltwch â ni trwy'r sianeli canlynol",
+        contactUsTitle: "Cysylltwch â Ni",
+        githubTitle: "GitHub",
+        githubDescription:
+            "Defnyddiwch y ddolen hon i weld sut i ddaddecodeu pecynnau data offer CHIL crai, creu a chynnal cronfeydd data MariaDB ar gyfer allbwn o offer cryo* , edrych a llwytho data offer CHIL, creu ffeiliau i osod cydnawsedd Docker ar gyfer prawf MariaDB, rheoleiddio foltedd, a mwy.",
+        githubLinkText: "Ymweld â'n Cronfa GitHub",
+        linkedinTitle: "LinkedIn",
+        linkedinDescription:
+            "Defnyddiwn LinkedIn i gysylltu'n broffesiynol, rhannu diweddariadau, a chymryd rhan yn ein cymuned.",
+        linkedinLinkText: "Cysylltwch â ni ar LinkedIn",
+        mastodonTitle: "Mastodon",
+        mastodonDescription:
+            "Dilynwch ni ar Mastodon am ddiweddariadau a thrafodaethau.",
+        mastodonLinkText: "Dilynwch ni ar Mastodon",
+        blueskyTitle: "Bluesky",
+        blueskyDescription: "Ymunwch yn ein sgwrsiau ar Bluesky.",
+        blueskyLinkText: "Ymunwch â ni ar Bluesky",
+        cardiffUniversityTitle: "Prifysgol Caerdydd",
+        cardiffUniversityDescription:
+            "Dysgwch fwy am Dr. Michael Prior-Jones a'i waith yn Prifysgol Caerdydd.",
+        cardiffUniversityLinkText: "Ymweld â'r Proffil Prifysgol Caerdydd",
+        // Resources Page
+        resourcesTitle: "Adnoddau",
+        resourcesIntro:
+            "Rydym yn dylunio a phrofi offerynnau diwifr ar gyfer arsylwi rhewlifoedd a dalennau iâ.",
+        cryoeggTitle: "Cryoeggs i arsylwi hydroleg is-rhewlifol",
+        cryowurstTitle: "Cryowurst i arsylwi mewnol rhewlif",
+        cryoeggMadeTitle: "Sut mae'r Cryoegg yn cael ei wneud?",
+        cryowurstMadeTitle: "Sut mae'r Cryowurst yn cael ei wneud?",
+        cryoeggDeployment:
+            "Rydym yn defnyddio Cryoeggs i arsylwi hydroleg is-rhewlifol. Gan ddefnyddio moulins, rydym yn defnyddio cryoeggs o'r arwyneb i'r system hydrolegol fewnol.",
+        cryowurstDeployment:
+            "Rydym yn drilio tyllau turio, ac yn defnyddio Cryowurst i fesur priodweddau iâ o fewn y golofn.",
+        surfaceReceiver:
+            "Mae'r offerynnau'n trosglwyddo data trwy ddolen radio i dderbynnydd ar yr arwyneb, sydd wedyn yn anfon y data yn ôl atom trwy loeren.",
+
+        temperature: " tymheredd: ",
+        condition: "Cyflwr: ",
+        deployment: "Deployment: ", // You might want to verify if there's a Welsh equivalent
+        descriptioncol: "Disgrifiad: ",
+        editDashboard: "Golygu Dangosfwrdd",
+        loadingWeather: "Llwytho tywydd...",
+        namecol: "Enw",
+        publishShareDashboard: "Cyhoeddi a Rhannu Dangosfwrdd",
+        setupEmailAlerts: "Gosod Rhybuddion Ebost",
+        save: "Cadw",
     },
 };

@@ -4,7 +4,9 @@ import { defineEmits, computed, ref, watch, nextTick } from "vue";
 import EmailForm from "./EmailForm.vue";
 import { useToast } from "../composables/useToast.ts";
 import Weather from "./Weather.vue";
+import { useTranslation } from "../composables/useTranslation"; // Importing translation
 
+const { t } = useTranslation();
 const { showToast } = useToast();
 
 const emit = defineEmits([
@@ -105,7 +107,7 @@ const warnSave = () => {
 </script>
 
 <template>
-    <h1 class="text-lg text-[var(--darkestBlue)] mb-2">Deployment:</h1>
+    <h1 class="text-lg text-[var(--darkestBlue)] mb-2">{{ t.deployment }}:</h1>
     <div class="w-full h-2/3">
         <div v-if="editMode" class="h-full">
             <textarea
@@ -129,7 +131,7 @@ const warnSave = () => {
                 class="w-full text-left font-semibold text-lg flex justify-between items-center cursor-pointer"
                 @click="toggleEmailForm"
             >
-                Setup Email Alerts
+                {{ t.setupEmailAlerts }}
                 <span v-if="!emailFormIsOpen" class="pl-3 pi pi-chevron-down" />
                 <span v-else class="pl-3 pi pi-chevron-up" />
             </button>
@@ -155,11 +157,11 @@ const warnSave = () => {
             class="my-2"
             @click="emit('publishLayout')"
         >
-            Publish and Share Dashboard
+            {{ t.publishShareDashboard }}
         </DashboardButton>
         <!-- Save and edit dashboard buttons -->
         <DashboardButton v-if="!editMode" @click="emit('enableEdit')">
-            Edit Dashboard
+            {{ t.editDashboard }}
         </DashboardButton>
         <div v-else class="mt-auto flex flex-row items-center">
             <DashboardButton
@@ -167,11 +169,11 @@ const warnSave = () => {
                 @click="
                     saveDisabled ? warnSave() : emit('saveEdit', deploymentInfo)
                 "
-                >Save</DashboardButton
+                >{{ t.save }}</DashboardButton
             >
-            <DashboardButton class="mx-3" @click="emit('cancelEdit')"
-                >Cancel</DashboardButton
-            >
+            <DashboardButton class="mx-3" @click="emit('cancelEdit')">{{
+                t.cancel
+            }}</DashboardButton>
         </div>
     </div>
 </template>

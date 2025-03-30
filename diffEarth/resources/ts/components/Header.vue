@@ -79,7 +79,9 @@ const toggleLanguage = () => {
 
         <div class="absolute bottom-2 right-4 flex gap-4">
             <router-link v-if="isAdmin" to="/admin">
-                <div class="text-xl text-greyBlue underline">Control Panel</div>
+                <div class="text-xl text-greyBlue underline">
+                    {{ translations[currentLanguage].controlpnl }}
+                </div>
             </router-link>
             <router-link v-if="isAdminOrCollaborator" to="/dashboard">
                 <div class="text-xl text-greyBlue underline">Dashboard</div>
@@ -100,14 +102,6 @@ const toggleLanguage = () => {
                     {{ translations[currentLanguage].aboutUs }}
                 </div>
             </router-link>
-            <router-link to="/community">
-                <div
-                    class="text-xl text-[var(--greyBlue)] underline"
-                    :aria-label="translations[currentLanguage].community"
-                >
-                    {{ translations[currentLanguage].community }}
-                </div>
-            </router-link>
             <router-link to="/Resources">
                 <div
                     class="text-xl text-[var(--greyBlue)] underline"
@@ -116,20 +110,12 @@ const toggleLanguage = () => {
                     {{ translations[currentLanguage].resources }}
                 </div>
             </router-link>
-            <router-link to="/login">
+            <router-link to="/contactus">
                 <div
                     class="text-xl text-[var(--greyBlue)] underline"
                     :aria-label="translations[currentLanguage].contactUs"
                 >
                     {{ translations[currentLanguage].contactUs }}
-                </div>
-            </router-link>
-            <router-link to="/Pricing">
-                <div
-                    class="text-xl text-[var(--greyBlue)] underline"
-                    :aria-label="translations[currentLanguage].pricing"
-                >
-                    {{ translations[currentLanguage].pricing }}
                 </div>
             </router-link>
             <div class="relative">

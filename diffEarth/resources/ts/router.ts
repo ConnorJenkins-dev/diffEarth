@@ -3,6 +3,8 @@ import UserDashboard from "./components/UserDashboard.vue";
 import AboutUs from "./components/AboutUs.vue";
 import PageNotFound from "./components/PageNotFound.vue";
 import MapPage from "./components/MapPage.vue";
+import ContactUs from "./components/ContactUs.vue";
+import Resources from "./components/Resources.vue";
 import PublicDashboard from "./components/PublicDashboard.vue";
 import ControlPanel from "./components/ControlPanel.vue";
 
@@ -18,6 +20,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/about/:id", component: AboutUs },
     { path: "/about", redirect: "/about/1" },
     { path: "/map", component: MapPage },
+    { path: "/contactus", component: ContactUs },
+    { path: "/resources", component: Resources },
     {
         path: "/admin",
         component: ControlPanel,

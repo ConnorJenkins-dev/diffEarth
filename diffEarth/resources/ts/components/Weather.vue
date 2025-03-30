@@ -2,6 +2,9 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+import { useTranslation } from "../composables/useTranslation"; // Importing translation
+
+const { t } = useTranslation();
 const weatherData = ref(null);
 const latLong = ref(null);
 
@@ -44,11 +47,18 @@ onMounted(fetchLatLong);
             :alt="weatherData.description"
             class="gcenter"
         />
-        <p><strong>Temperature:</strong> {{ weatherData.temperature }}°C</p>
-        <p><strong>Condition:</strong> {{ weatherData.condition }}</p>
-        <p><strong>Description:</strong> {{ weatherData.description }}</p>
+        <p>
+            <strong>{{ t.temperature }}</strong> {{ weatherData.temperature }}°C
+        </p>
+        <p>
+            <strong>{{ t.condition }}</strong> {{ weatherData.condition }}
+        </p>
+        <p>
+            <strong>{{ t.descriptioncol }}</strong>
+            {{ weatherData.description }}
+        </p>
     </div>
-    <p v-else>Loading weather...</p>
+    <p v-else>{{ t.loadingWeather }}.</p>
 </template>
 
 <style scoped>
