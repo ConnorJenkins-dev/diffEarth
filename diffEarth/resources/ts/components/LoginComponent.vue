@@ -107,7 +107,7 @@ const login = async () => {
         console.log("Login successful:", data);
 
         localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
+        localStorage.setItem("role", data.roles);
 
         window.location.reload();
     } catch (error) {

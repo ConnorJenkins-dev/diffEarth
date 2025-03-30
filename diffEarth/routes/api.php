@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Http\Request;
@@ -20,8 +21,6 @@ use App\Http\Controllers\DeploymentController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-
 
 // route for rendering datasets
 Route::get('/datasets', [DatasetController::class, 'index']);
@@ -105,6 +104,14 @@ Route::middleware(['auth:sanctum', 'role:collaborator'])->get('/about', function
     return response()->json(['message' => 'Welcome to about us page!']);
 });
 
+Route::get('/users/emails', [UserController::class, 'getAllEmails']);
+
+Route::post('/users/update-role', [UserController::class, 'updateUserRole']);
+
+Route::get('/roles', [RoleController::class, 'getAllRoles']);
+
+Route::post('/roles/add-role', [RoleController::class, 'addRole']);
+
 Route::middleware([CorsMiddleware::class])->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
@@ -115,5 +122,3 @@ Route::options('/{any}', function () {
     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 })->where('any', '.*');
-
-Route::get('/emails', [UserController::class, 'getAllEmails']);

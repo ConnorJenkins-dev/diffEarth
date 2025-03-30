@@ -10,7 +10,13 @@ const showSignup = ref(false);
 
 const userRole = ref(localStorage.getItem("role") || "user");
 
-const isAdmin = computed(() => userRole.value === "admin");
+const isAdmin = computed(() => userRole.value.includes("admin"));
+
+const isAdminOrCollaborator = computed(
+    () =>
+        userRole.value.includes("admin") ||
+        userRole.value.includes("collaborator"),
+);
 
 const isLoggedIn = ref(!!localStorage.getItem("token"));
 
@@ -65,13 +71,17 @@ const toggleLanguage = () => {
             </div>
             <span
                 v-if="isLoggedIn"
-                class="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-sm text-gray-400"
+                class="absolute top-full mt-1 left-8 transform text-sm text-gray-400 no-wrap"
             >
                 {{ userRole }}
             </span>
         </div>
+
         <div class="absolute bottom-2 right-4 flex gap-4">
-            <router-link v-if="isAdmin" to="/dashboard">
+            <router-link v-if="isAdmin" to="/admin">
+                <div class="text-xl text-greyBlue underline">Control Panel</div>
+            </router-link>
+            <router-link v-if="isAdminOrCollaborator" to="/dashboard">
                 <div class="text-xl text-greyBlue underline">Dashboard</div>
             </router-link>
             <router-link to="/map">
@@ -160,4 +170,13 @@ const toggleLanguage = () => {
     </header>
 </template>
 
-<style scoped></style>
+<style scoped>
+.no-wrap {
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis if the text overflows */
+    position: absolute; /* Ensures it is absolutely positioned */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for centering */
+}
+</style>
