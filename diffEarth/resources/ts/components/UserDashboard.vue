@@ -5,6 +5,7 @@ import Header from "./Header.vue";
 import DatasetView from "./DatasetView.vue";
 import PlotlyGraph from "./PlotlyGraph.vue";
 import EmailForm from "./EmailForm.vue";
+import Alertdelete from "./DeleteAlerts.vue";
 </script>
 
 <template>
@@ -72,6 +73,9 @@ import EmailForm from "./EmailForm.vue";
             >
                 <div class="flex justify-center">
                     <EmailForm />
+                </div>
+                <div class="flex justify-center">
+                    <Alertdelete />
                 </div>
             </section>
         </aside>

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\AlertController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,4 +54,8 @@ Route::get('/columns/{columnId}/datapoints', [App\Http\Controllers\GraphDataCont
 
 Route::get('/columns/{columnId}/data+stamp', [App\Http\Controllers\GraphDataController::class, 'getDataAndTimestamp']);
 
+Route::get('/alerts', [AlertController::class, 'index']);
+
 Route::post('/send-email', [EmailController::class, 'sendEmail']);
+
+Route::delete('/alerts/{id}', [AlertController::class, 'destroy']);
