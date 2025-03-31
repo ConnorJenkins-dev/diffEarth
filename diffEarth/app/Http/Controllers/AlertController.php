@@ -24,4 +24,24 @@ class AlertController extends Controller
 
         return response()->json(['message' => 'Alert deleted successfully']);
     }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'location' => 'required|string',
+            'column' => 'required|string',
+            'threshold' => 'required|numeric',
+            'emaillist' => 'required|array',
+            'emaillist.*' => 'email',
+        ]);
+
+        $alert = Alert::create([
+            'location' => $validatedData['location'],
+            'column' => $validatedData['column'],
+            'threshold' => $validatedData['threshold'],
+            'emaillist' => json_encode($validatedData['emaillist']),
+        ]);
+
+        return response()->json(['message' => 'Alert created successfully', 'alert' => $alert], 201);
+    }
 }

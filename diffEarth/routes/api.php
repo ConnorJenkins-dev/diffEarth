@@ -59,3 +59,7 @@ Route::get('/alerts', [AlertController::class, 'index']);
 Route::post('/send-email', [EmailController::class, 'sendEmail']);
 
 Route::delete('/alerts/{id}', [AlertController::class, 'destroy']);
+
+Route::post('/alerts', [AlertController::class, 'store']);
+
+Route::post('/alerts', [AlertController::class, 'store']);
