@@ -1,15 +1,13 @@
-# 68b Cardiff Earth
 
-***
+
+
+# 68b Cardiff Earth
 
 ## Name
 Cardiff EARTH
 
 ## Description
-Web application for the Cardiff EARTH project.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Web application for the Cardiff EARTH project. This is a system to view and share data from CHIL deployments of glacier tracking devices.
 
 ## Installation
 ### Pre-requisites
@@ -27,27 +25,33 @@ under `Clone with HTTPS`.
 - Change directory to `68b-cardiff-earth/diffEarth`
 
 ### Setting up the project for development
+- Contact team for .env variables
+- Set the following in your php.ini (to find, type `php --ini` in terminal)
+- remove the `;` before: `extension=pdo_mysql` and `extension=fileinfo`
+- Check for any other issues in [PHP Config](home/readme/phpconfig)
 - Run `composer install`
 - Run `npm install`
 
 ### Running the project
 - Run `composer dev` to start the PHP server and vite server
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### Testing development tools
+* Run in git bash `composer install`
+* Then `npm install`
+* Add database source, setup with comsc database user and password
+* Open db console, type `create database diffearth`
+* Run in terminal `php artisan migrate:fresh --seed`
+* Ensure database has tables including users table
+* Start the project by running `composer dev`
+* Go to `localhost:8000`
+* Ensure home page renders
+* Ensure in `/68b-cardiff-earth/.git/hooks` there is now a `pre-commit` containing a bash script to run linters (.git folder is hidden in windows explorer by default, go to view>hidden to see it)
+* Run `composer format`
+* Ensure php linter and formatter runs
+* Run `npm run format`
+* Ensure typescript formatter runs
+* Run `npm run lint`
+* Ensure eslint runs
 
 ## Authors and acknowledgment
 ### Developers
@@ -56,19 +60,3 @@ You can also document commands to lint the code or run tests. These steps help t
 - Cole Pearson
 - Beaumont Mogridge
 - Diyorbek Sanaqulov
-
-### Cardiff EARTH
-- link
-
-## License
-For open source projects, say how it is licensed.
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
