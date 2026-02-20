@@ -18,7 +18,7 @@ class DatasetviewTest extends TestCase
         Dataset::factory()->count(5)->create();
 
         // Act: Send a GET request to the /api/datasets endpoint
-        $response = $this->getJson('/api/datasets');
+        $response = $this->getJson('api/datasets');
 
         // Assert: Verify successful status and structure
         $response->assertStatus(Response::HTTP_OK);
@@ -46,14 +46,14 @@ class DatasetviewTest extends TestCase
         Dataset::factory()->count(55)->create();
 
         // Act: Send a GET request for the first page
-        $response = $this->getJson('/api/datasets?page=1');
+        $response = $this->getJson('api/datasets?page=1');
 
         // Assert: Verify first page contains 50 results
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(50, 'data');
 
         // Act: Send a GET request for the second page
-        $response = $this->getJson('/api/datasets?page=2');
+        $response = $this->getJson('api/datasets?page=2');
 
         // Assert: Verify the second page contains 5 results
         $response->assertStatus(Response::HTTP_OK);
@@ -69,7 +69,7 @@ class DatasetviewTest extends TestCase
         Dataset::factory()->create(['dataset_name' => 'Dataset 3', 'id' => 3]);
 
         // Act: Send the GET request
-        $response = $this->getJson('/api/datasets');
+        $response = $this->getJson('api/datasets');
 
         // Assert: Verify the order of datasets
         $responseData = $response->json('data');
@@ -84,7 +84,7 @@ class DatasetviewTest extends TestCase
     public function test_api_handles_no_datasets(): void
     {
         // Act: Send a GET request when no datasets exist
-        $response = $this->getJson('/api/datasets');
+        $response = $this->getJson('api/datasets');
 
         // Assert: Verify successful response with an empty data array
         $response->assertStatus(Response::HTTP_OK);

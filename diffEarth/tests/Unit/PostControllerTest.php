@@ -28,7 +28,7 @@ class PostControllerTest extends TestCase
                 'image_base64' => 'stringofcharacters'
             ]
         );
-        $response = $this->getJson('/api/post');
+        $response = $this->getJson('api/post');
         $response->assertJsonFragment([
             'title' => 'test title',
             'content' => 'test content',

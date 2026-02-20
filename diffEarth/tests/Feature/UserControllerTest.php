@@ -18,7 +18,7 @@ class UserControllerTest extends TestCase
         $role = Role::factory()->create(['name' => 'admin']);
         $user->roles()->attach($role);
 
-        $response = $this->actingAs($user)->getJson('/api/user/roles');
+        $response = $this->actingAs($user)->getJson('api/user/roles');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -34,7 +34,7 @@ class UserControllerTest extends TestCase
     /** @test */
     public function unauthenticated_user_cannot_retrieve_roles()
     {
-        $response = $this->getJson('/api/user/roles');
+        $response = $this->getJson('api/user/roles');
 
         $response->assertStatus(401)
             ->assertJson(['message' => 'Unauthenticated.']);

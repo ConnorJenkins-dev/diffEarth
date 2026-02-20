@@ -17,7 +17,7 @@ class AboutUsControllerTest extends TestCase
             'biography' => 'test biography',
         ]);
 
-        $response = $this->getJson("/api/biographyText/{$collaborator->id}");
+        $response = $this->getJson("api/biographyText/{$collaborator->id}");
 
         $response->assertStatus(200)
             ->assertJson([
@@ -27,7 +27,7 @@ class AboutUsControllerTest extends TestCase
 
     public function testItGives404ForNonExistingCollaborator()
     {
-        $response = $this->getJson("/api/biographyText/999");
+        $response = $this->getJson("api/biographyText/999");
         $response->assertStatus(404);
     }
 
@@ -38,7 +38,7 @@ class AboutUsControllerTest extends TestCase
             'biography' => 'test biography',
         ]);
 
-        $response = $this->postJson("/api/biographyText/{$collaborator->id}", [
+        $response = $this->postJson("api/biographyText/{$collaborator->id}", [
             'biography' => 'edited test biography',
         ]);
 

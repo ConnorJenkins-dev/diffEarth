@@ -19,7 +19,7 @@ class DeploymentControllerTest extends TestCase
     {
         $uid = (string) Str::uuid();
         // Send POST request to create a deployment
-        $response = $this->postJson('/api/deployments', [
+        $response = $this->postJson('api/deployments', [
             'uid' => $uid,
             'name' => 'New Deployment',
             'latitude' => 72.0,
@@ -53,7 +53,7 @@ class DeploymentControllerTest extends TestCase
     public function test_validation_errors_on_creation()
     {
         // Send invalid POST request
-        $response = $this->postJson('/api/deployments', [
+        $response = $this->postJson('api/deployments', [
             'uid' => '', // Missing UID
             'name' => 'New Deployment',
             'latitude' => 100, // Invalid latitude
@@ -80,7 +80,7 @@ class DeploymentControllerTest extends TestCase
         ]);
 
         // Fetch deployment by ID
-        $response = $this->getJson("/api/deployments/{$deployment->id}");
+        $response = $this->getJson("api/deployments/{$deployment->id}");
 
         // Assert successful fetch
         $response->assertStatus(200)
@@ -108,7 +108,7 @@ class DeploymentControllerTest extends TestCase
     public function test_handle_non_existent_deployment()
     {
         // Fetch non-existent deployment
-        $response = $this->getJson('/api/deployments/9999');
+        $response = $this->getJson('api/deployments/9999');
 
         // Assert 404 error with custom message
         $response->assertStatus(404)
@@ -124,7 +124,7 @@ class DeploymentControllerTest extends TestCase
     {
         Deployment::factory()->count(3)->create();
 
-        $response = $this->getJson('/api/deployments');
+        $response = $this->getJson('api/deployments');
 
         $response->assertStatus(200)
             ->assertJsonCount(3);
@@ -137,7 +137,7 @@ class DeploymentControllerTest extends TestCase
     {
         $deployment = Deployment::factory()->create();
 
-        $response = $this->deleteJson("/api/deployments/{$deployment->id}");
+        $response = $this->deleteJson("api/deployments/{$deployment->id}");
 
         $response->assertStatus(200)
             ->assertJson([
@@ -170,7 +170,7 @@ class DeploymentControllerTest extends TestCase
         ]);
 
         // Now try to retrieve
-        $response = $this->getJson('/api/deployments/in-progress');
+        $response = $this->getJson('api/deployments/in-progress');
 
         $response->assertStatus(200)
             ->assertJsonFragment(['name' => 'Test In Progress']);
@@ -181,7 +181,7 @@ class DeploymentControllerTest extends TestCase
      */
     public function test_in_progress_index_returns_404_if_not_exists()
     {
-        $response = $this->getJson('/api/deployments/in-progress');
+        $response = $this->getJson('api/deployments/in-progress');
 
         $response->assertStatus(404);
     }
@@ -193,7 +193,7 @@ class DeploymentControllerTest extends TestCase
     {
         $layout = [['x' => 0, 'y' => 0, 'w' => 2, 'h' => 2, 'i' => 'graph_0', 'itemData' => []]];
 
-        $response = $this->postJson('/api/deployments/in-progress', [
+        $response = $this->postJson('api/deployments/in-progress', [
             'id' => 1,
             'name' => 'Untitled Dashboard',
             'layout' => $layout,
@@ -224,7 +224,7 @@ class DeploymentControllerTest extends TestCase
             'description' => 'Desc'
         ]);
 
-        $response = $this->getJson('/api/dashboard/abc123');
+        $response = $this->getJson('api/dashboard/abc123');
 
         $response->assertStatus(200)
             ->assertJsonFragment([
