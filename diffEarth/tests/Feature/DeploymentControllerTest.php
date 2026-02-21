@@ -80,7 +80,7 @@ class DeploymentControllerTest extends TestCase
         ]);
 
         // Fetch deployment by ID
-        $response = $this->getJson("api/deployments/{$deployment->id}");
+        $response = $this->getJson(`api/deployments/{$deployment->id}`);
 
         // Assert successful fetch
         $response->assertStatus(200)

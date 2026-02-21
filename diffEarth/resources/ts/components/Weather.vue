@@ -15,9 +15,12 @@ const uuid = route.params.uuid;
 // Fetch the latitude and longitude for the deployment
 const fetchLatLong = async () => {
     try {
-        const response = await fetch(`/api/deployments/${uuid}/latlong`, {
-            method: "GET", // Make sure the method is GET
-        });
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments/${uuid}/latlong`,
+            {
+                method: "GET", // Make sure the method is GET
+            },
+        );
         const data = await response.json();
         latLong.value = data; // Store lat and long in latLong
         fetchWeather(latLong.value.lat, latLong.value.long); // Fetch weather data with lat, lon
@@ -29,7 +32,9 @@ const fetchLatLong = async () => {
 // Fetch weather data using dynamic latitude and longitude
 const fetchWeather = async (lat, lon) => {
     try {
-        const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/weather?lat=${lat}&lon=${lon}`,
+        );
         weatherData.value = await response.json();
     } catch (error) {
         console.error("Error fetching weather:", error);

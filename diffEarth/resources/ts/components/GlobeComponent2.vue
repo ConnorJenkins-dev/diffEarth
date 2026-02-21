@@ -18,7 +18,9 @@ const preventScroll = (event) => {
 
 async function fetchDeployments() {
     try {
-        const response = await fetch("/api/deployments");
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments`,
+        );
         if (!response.ok) throw new Error("Failed to fetch deployments");
         const data = await response.json();
 
@@ -51,7 +53,7 @@ onMounted(async () => {
         .globeTileEngineUrl(
             (x, y, l) => `https://tile.openstreetmap.org/${l}/${x}/${y}.png`,
         )
-        .backgroundImageUrl("/white.png")
+        .backgroundImageUrl("white.png")
         .pointsData(markers.value)
         .pointAltitude(0.02)
         .pointColor(() => "rgba(15,12,167,0.85)")

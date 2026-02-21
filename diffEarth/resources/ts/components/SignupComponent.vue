@@ -91,7 +91,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function checkIfEmailExists(email) {
     try {
-        const response = await fetch("/api/emails");
+        const response = await fetch(`${import.meta.env.BASE_URL}api/emails`);
         if (!response.ok) throw new Error("Failed to fetch emails.");
 
         const existingEmails = await response.json();
@@ -155,7 +155,7 @@ const register = async () => {
     }
 
     try {
-        const response = await fetch("/api/register", {
+        const response = await fetch("api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

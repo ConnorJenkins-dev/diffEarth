@@ -8,7 +8,7 @@ const roles = ref([]);
 // Fetch existing roles
 const fetchRoles = async () => {
     try {
-        const response = await fetch("/api/roles");
+        const response = await fetch(`${import.meta.env.BASE_URL}api/roles`);
         if (!response.ok) throw new Error("Failed to fetch roles.");
         roles.value = await response.json();
         console.log(roles);
@@ -52,11 +52,14 @@ const createRole = async () => {
         }
 
         // Proceed with creating the role
-        const response = await fetch("/api/roles/add-role", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: newRoleName }),
-        });
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/roles/add-role`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: newRoleName }),
+            },
+        );
 
         const result = await response.json();
 

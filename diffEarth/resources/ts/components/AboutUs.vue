@@ -13,7 +13,11 @@ const postArray = ref<Post[]>([]);
 // Fetch all posts or fetch post by ID
 async function fetchPost(id?: number) {
     try {
-        const data = await fetch(id ? `/api/post/${id}` : "/api/post");
+        const data = await fetch(
+            id
+                ? `${import.meta.env.BASE_URL}api/post/${id}`
+                : `${import.meta.env.BASE_URL}api/post`,
+        );
         const post = await data.json();
         addPostsToArray(post);
     } catch (error) {

@@ -76,7 +76,9 @@ const editMode = ref(false);
 
 const fetchDeployment = async () => {
     try {
-        const res = await fetch(`/api/dashboard/${uuid}`);
+        const res = await fetch(
+            `${import.meta.env.BASE_URL}api/dashboard/${uuid}`,
+        );
         const data = await res.json();
         layout.value = data.layout;
         info.value = data.info;

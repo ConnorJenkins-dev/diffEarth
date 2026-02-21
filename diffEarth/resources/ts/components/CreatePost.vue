@@ -48,13 +48,16 @@ const fetchUser = async () => {
             throw new Error("No token found");
         }
 
-        const response = await fetch("/api/user-get", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/user-get`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             },
-        });
+        );
 
         if (!response.ok) {
             throw new Error("Error fetching user");
@@ -90,7 +93,7 @@ async function postForm() {
     }
     try {
         // Post to API
-        const response = await fetch("/api/post", {
+        const response = await fetch(`${import.meta.env.BASE_URL}api/post`, {
             method: "POST",
             body: formData,
         });

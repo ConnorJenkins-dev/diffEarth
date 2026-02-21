@@ -24,7 +24,9 @@ const preventScroll = (event) => {
 // Fetch deployments from the API using fetch
 async function fetchDeployments() {
     try {
-        const response = await fetch("/api/deployments");
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments`,
+        );
         if (!response.ok) {
             throw new Error(
                 `Error fetching deployments: ${response.statusText}`,
@@ -87,11 +89,11 @@ onMounted(async () => {
 
     // Initialize the globe
     try {
-        const countries = await fetchGeoJson("/countries.geojson", 5, 1000);
+        const countries = await fetchGeoJson("countries.geojson", 5, 1000);
 
         myGlobe.value = Globe()(globeDiv.value)
-            .globeImageUrl("/white.png")
-            .backgroundImageUrl("/white.png")
+            .globeImageUrl("white.png")
+            .backgroundImageUrl("white.png")
             .polygonsData(countries.features)
             .polygonCapColor((feat) =>
                 feat.properties.admin === "Greenland" ? "#00adff" : "#ffffff",

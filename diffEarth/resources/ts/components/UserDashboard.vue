@@ -69,7 +69,9 @@ const showModal = ref(false);
 
 const fetchLayout = async () => {
     try {
-        const response = await fetch("/api/deployments/in-progress");
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments/in-progress`,
+        );
         if (!response.ok) {
             return;
         }
@@ -261,17 +263,20 @@ const saveLayout = async (deploymentText: string) => {
     unsaved.value = false;
     info.value = deploymentText;
     try {
-        const response = await fetch("/api/deployments/in-progress", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments/in-progress`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: 1,
+                    layout: layout.value,
+                    info: deploymentText,
+                }),
             },
-            body: JSON.stringify({
-                id: 1,
-                layout: layout.value,
-                info: deploymentText,
-            }),
-        });
+        );
 
         if (response.ok) {
             console.log("Layout saved.");

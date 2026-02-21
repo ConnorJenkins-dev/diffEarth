@@ -40,11 +40,26 @@ class ProcessCsvJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $fullPath = public_path($this->filePath);
+        $fullPath = storage_path('app/private/' . $this->filePath);
+
+        //debug
+        Log::info('Trying to open CSV', [
+            'path' => $fullPath,
+            'exists' => file_exists($fullPath),
+            'readable' => is_readable($fullPath),
+        ]);
         $handle = fopen($fullPath, 'r');
+
         if ($handle === false) {
+            Log::info('$handle is false, cannot open file');
             return;
         }
+
+    //debug
+        Log::info('CSV Job started', [
+            'filePath' => $this->filePath,
+            'originalName' => $this->originalName
+        ]);
 
         // Use transaction so nothing gets saved unless everything succeeds
         DB::beginTransaction();
@@ -128,17 +143,21 @@ class ProcessCsvJob implements ShouldQueue
                 }
             }
 
-            fclose($handle);
             DB::commit();
             broadcast(new CsvUploaded($dataset));
         } catch (\Exception $e) {
             DB::rollBack();
-            fclose($handle);
             Log::error($e->getMessage());
             $this->fail($e->getMessage());
+            if (is_resource($handle)) {
+                fclose($handle);
+            }
         } finally {
             if (file_exists($fullPath)) {
                 unlink($fullPath);
+            }
+            if (is_resource($handle)) {
+                fclose($handle);
             }
         }
     }

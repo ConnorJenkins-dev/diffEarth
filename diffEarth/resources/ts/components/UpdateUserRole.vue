@@ -63,14 +63,16 @@ const roleInputs = ref([{ role: "" }]); // Initialize with one empty role input
 // Fetch all users' emails and roles from the API
 onMounted(async () => {
     try {
-        const response = await fetch("/api/users/emails");
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/users/emails`,
+        );
         emails.value = await response.json();
     } catch (error) {
         console.error("Error fetching emails:", error);
     }
 
     try {
-        const response = await fetch("/api/roles");
+        const response = await fetch(`${import.meta.env.BASE_URL}api/roles`);
         roles.value = await response.json();
     } catch (error) {
         console.error("Error fetching roles:", error);
@@ -106,14 +108,17 @@ const updateRoles = async () => {
     }
 
     try {
-        const response = await fetch("/api/users/update-role", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email: selectedEmail.value,
-                roles: rolesToUpdate,
-            }),
-        });
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/users/update-role`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: selectedEmail.value,
+                    roles: rolesToUpdate,
+                }),
+            },
+        );
 
         const result = await response.json();
 
