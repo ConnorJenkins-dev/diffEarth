@@ -93,7 +93,7 @@ const login = async () => {
     try {
         console.log("Attempting login...");
 
-        const response = await fetch("/api/login", {
+        const response = await fetch(`${import.meta.env.BASE_URL}api/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -123,7 +123,7 @@ const logout = async () => {
     try {
         console.log("Logging out...");
 
-        const response = await fetch("/api/logout", {
+        const response = await fetch(`${import.meta.env.BASE_URL}api/logout`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

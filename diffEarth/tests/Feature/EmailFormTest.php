@@ -11,7 +11,7 @@ class EmailFormTest extends TestCase
 
     public function testEmailFormSubmissionSuccess()
     {
-        $response = $this->post('/api/send-email', [
+        $response = $this->post('api/send-email', [
             'location' => 'place',
             'column' => 'time',
             'threshold' => 10,
@@ -24,7 +24,7 @@ class EmailFormTest extends TestCase
 
     public function testEmailFormValidationErrors()
     {
-        $response = $this->postJson('/api/send-email', []); // Use postJson for API tests
+        $response = $this->postJson('api/send-email', []); // Use postJson for API tests
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['location', 'column', 'threshold', 'emails']);

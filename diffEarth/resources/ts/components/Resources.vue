@@ -5,37 +5,41 @@ import { useTranslation } from "../composables/useTranslation";
 import ImageSlider from "../components/ImageSlider.vue";
 const { t } = useTranslation();
 
+const base = import.meta.env.BASE_URL;
+
 const cryoeggImages = ref([
-    "/Images//Resources/egg1.jpg",
-    "/Images//Resources/egg2.jpg",
-    "/Images//Resources/egg3.jpg",
+    `${base}Images/Resources/egg1.jpg`,
+    `${base}Images/Resources/egg2.jpg`,
+    `${base}Images/Resources/egg3.jpg`,
 ]);
 
 const cryowurstImages = ref([
-    "/Images/Resources/wurst1.jpg",
-    "/Images/Resources/wurst2.jpg",
+    `${base}Images/Resources/wurst1.jpg`,
+    `${base}Images/Resources/wurst2.jpg`,
 ]);
 
 const cryoeggMade = ref([
-    "/Images//Resources/eggmade1.png",
-    "/Images//Resources/eggmade2.png",
+    `${base}Images/Resources/eggmade1.png`,
+    `${base}Images/Resources/eggmade2.png`,
 ]);
+
 const surfaceReceiverImages = ref([
-    "/Images/Resources/surfsetup.png",
-    "/Images/Resources/greenlandreceiver1.jpg",
-    "/Images/Resources/greenlandreceiver2.jpg",
-    "/Images/Resources/greenlandreceiver3.jpg",
-    "/Images/Resources/yukon_mike_receiver.jpg",
-    "/Images/Resources/datalogger.jpg",
+    `${base}Images/Resources/surfsetup.png`,
+    `${base}Images/Resources/greenlandreceiver1.jpg`,
+    `${base}Images/Resources/greenlandreceiver2.jpg`,
+    `${base}Images/Resources/greenlandreceiver3.jpg`,
+    `${base}Images/Resources/yukon_mike_receiver.jpg`,
+    `${base}Images/Resources/datalogger.jpg`,
 ]);
 
 const cryowurstDeployImages = ref([
-    "/Images/Resources/wurstdep.jpg",
-    "/Images/Resources/yukon_happy_wurst.jpg",
-    "/Images/Resources/yukon_wurst_deployment.jpg",
+    `${base}Images/Resources/wurstdep.jpg`,
+    `${base}Images/Resources/yukon_happy_wurst.jpg`,
+    `${base}Images/Resources/yukon_wurst_deployment.jpg`,
 ]);
-const cryoeggDeployImage = "/Images/Resources/eggdep.jpg";
-const cryowurstMadeImage = "/Images/Resources/wurstmade.png";
+
+const cryoeggDeployImage = `${base}Images/Resources/eggdep.jpg`;
+const cryowurstMadeImage = `${base}Images/Resources/wurstmade.png`;
 </script>
 <template>
     <Header />

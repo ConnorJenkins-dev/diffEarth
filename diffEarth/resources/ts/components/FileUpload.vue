@@ -71,7 +71,7 @@ async function handleUpload() {
     formData.append("file", selectedFile.value);
 
     try {
-        const response = await fetch("/api/upload", {
+        const response = await fetch(`${import.meta.env.BASE_URL}api/upload`, {
             method: "POST",
             body: formData,
             headers: {

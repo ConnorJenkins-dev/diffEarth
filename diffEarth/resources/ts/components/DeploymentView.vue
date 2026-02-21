@@ -106,7 +106,9 @@ const { showToast } = useToast();
 // Fetch deployments from the API using fetch
 async function fetchDeployments() {
     try {
-        const response = await fetch("/api/deployments");
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments`,
+        );
         if (!response.ok) {
             throw new Error(
                 `Error fetching deployments: ${response.statusText}`,
@@ -184,9 +186,12 @@ async function deleteDeployment(deployment) {
     if (!confirmDelete) return;
 
     try {
-        const response = await fetch(`/api/deployments/${deployment.id}`, {
-            method: "DELETE",
-        });
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments/${deployment.id}`,
+            {
+                method: "DELETE",
+            },
+        );
 
         if (!response.ok) {
             throw new Error("Failed to delete deployment");

@@ -55,7 +55,9 @@ watch(
 );
 
 // Function to fetch datasets from the API
-const fetchDatasets = async (url: string = "/api/datasets") => {
+const fetchDatasets = async (
+    url: string = `${import.meta.env.BASE_URL}api/datasets`,
+) => {
     loading.value = true;
     try {
         // Make GET request to fetch datasets

@@ -20,7 +20,7 @@ class AuthRoleTest extends TestCase
         $role = Role::create(['name' => 'user']);
 
         // Register a new user
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('api/register', [
             'name' => 'Test User',
             'email' => 'testuser@test.com',
             'password' => 'password123',
@@ -46,7 +46,7 @@ class AuthRoleTest extends TestCase
     public function user_cannot_login_with_invalid_credentials()
     {
         // Try logging in with invalid credentials
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('api/login', [
             'email' => 'invaliduser@test.com',
             'password' => 'wrongpassword',
         ]);
@@ -69,7 +69,7 @@ class AuthRoleTest extends TestCase
         $user->roles()->attach($role);
 
         // Attempt to register with the same email
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('api/register', [
             'name' => 'New User',
             'email' => 'existinguser@test.com',
             'password' => 'newpassword123',
@@ -94,7 +94,7 @@ class AuthRoleTest extends TestCase
         $user->roles()->attach($role);
 
         // Log the user in and get the token
-        $loginResponse = $this->postJson('/api/login', [
+        $loginResponse = $this->postJson('api/login', [
             'email' => 'testuser@test.com',
             'password' => 'password123',
         ]);
@@ -102,7 +102,7 @@ class AuthRoleTest extends TestCase
         $token = $loginResponse->json()['token'];
 
         // Logout request with the user's token
-        $response = $this->postJson('/api/logout', [], [
+        $response = $this->postJson('api/logout', [], [
             'Authorization' => 'Bearer ' . $token,
         ]);
 
@@ -115,7 +115,7 @@ class AuthRoleTest extends TestCase
     public function user_cannot_logout_without_token()
     {
         // Try to log out without a token
-        $response = $this->postJson('/api/logout');
+        $response = $this->postJson('api/logout');
 
         // Assert unauthorized response
         $response->assertStatus(401)

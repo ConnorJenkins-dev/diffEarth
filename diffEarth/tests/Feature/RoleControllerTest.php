@@ -16,7 +16,7 @@ class RoleControllerTest extends TestCase
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'editor']);
 
-        $response = $this->getJson('/api/roles');
+        $response = $this->getJson('api/roles');
 
         $response->assertStatus(200)
             ->assertJson(['admin', 'editor']);
@@ -25,7 +25,7 @@ class RoleControllerTest extends TestCase
     /** @test */
     public function test_add_role_successfully_creates_role()
     {
-        $response = $this->postJson('/api/roles/add-role', [
+        $response = $this->postJson('api/roles/add-role', [
             'name' => 'moderator',
         ]);
 
@@ -41,7 +41,7 @@ class RoleControllerTest extends TestCase
     /** @test */
     public function test_add_role_fails_when_name_is_missing()
     {
-        $response = $this->postJson('/api/roles/add-role', []);
+        $response = $this->postJson('api/roles/add-role', []);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors('name');

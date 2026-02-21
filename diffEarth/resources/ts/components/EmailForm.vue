@@ -41,20 +41,23 @@ const sendEmail = async () => {
     }
 
     try {
-        const response = await fetch("/api/send-email", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/send-email`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    location: form.value.location,
+                    column: form.value.column,
+                    threshold: form.value.threshold,
+                    emails: form.value.emails
+                        .split(",")
+                        .map((email) => email.trim()),
+                }),
             },
-            body: JSON.stringify({
-                location: form.value.location,
-                column: form.value.column,
-                threshold: form.value.threshold,
-                emails: form.value.emails
-                    .split(",")
-                    .map((email) => email.trim()),
-            }),
-        });
+        );
 
         const data = await response.json(); // Parse JSON response
 

@@ -16,7 +16,9 @@ const collaboratorId = route.params.id;
 const getBiographyText = async () => {
     isLoading.value = true;
     try {
-        const response = await fetch(`/api/biographyText/${collaboratorId}`);
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/biographyText/${collaboratorId}`,
+        );
         if (!response.ok) {
             console.error("Failed to fetch biography text");
             return;
@@ -33,13 +35,16 @@ const getBiographyText = async () => {
 
 const saveBiography = async () => {
     try {
-        const response = await fetch(`/api/biographyText/${collaboratorId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/biographyText/${collaboratorId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ biography: biographyText.value }),
             },
-            body: JSON.stringify({ biography: biographyText.value }),
-        });
+        );
         if (!response.ok) {
             console.error("Failed to save biography");
             showToast("Failed to save biography!", "error");

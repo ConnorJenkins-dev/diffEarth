@@ -180,7 +180,7 @@ async function fetchGraphData() {
 }
 
 async function fetchPlots(id: number) {
-    return fetch(`/api/columns/${id}/data+stamp`)
+    return fetch(`${import.meta.env.BASE_URL}api/columns/${id}/data+stamp`)
         .then((response) => response.json())
         .then((data) => {
             return data;
@@ -192,7 +192,7 @@ async function fetchPlots(id: number) {
 
 // Fetch list of all datasets
 async function fetchDatasets() {
-    return fetch("/api/dataset")
+    return fetch(`${import.meta.env.BASE_URL}api/dataset`)
         .then((response) => response.json())
         .then((data) => {
             return data;
@@ -204,7 +204,7 @@ async function fetchDatasets() {
 
 // Fetch list of all categories
 async function fetchCategories(id: number) {
-    return fetch(`/api/dataset/${id}/columns`)
+    return fetch(`${import.meta.env.BASE_URL}api/dataset/${id}/columns`)
         .then((response) => response.json())
         .then((data) => {
             return data;

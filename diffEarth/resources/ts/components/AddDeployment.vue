@@ -236,20 +236,23 @@ const submitDeployment = async () => {
 
         console.log("info:", localInfo.value);
 
-        const response = await fetch("/api/deployments", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${import.meta.env.BASE_URL}api/deployments`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: newDeployment.value.name,
+                    latitude: parseFloat(newDeployment.value.latitude),
+                    longitude: parseFloat(newDeployment.value.longitude),
+                    description: props.info, // this is the "info" from the dashboard
+                    info: localInfo.value,
+                    layout: clonedLayout,
+                }),
             },
-            body: JSON.stringify({
-                name: newDeployment.value.name,
-                latitude: parseFloat(newDeployment.value.latitude),
-                longitude: parseFloat(newDeployment.value.longitude),
-                description: props.info, // this is the "info" from the dashboard
-                info: localInfo.value,
-                layout: clonedLayout,
-            }),
-        });
+        );
 
         if (!response.ok) {
             const errorData = await response.json();

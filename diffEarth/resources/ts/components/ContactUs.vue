@@ -2,6 +2,7 @@
 import Header from "./Header.vue";
 import { useTranslation } from "../composables/useTranslation";
 const { t } = useTranslation();
+const base = import.meta.env.BASE_URL;
 </script>
 
 <template>
@@ -24,7 +25,10 @@ const { t } = useTranslation();
                         class="flex items-center p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50"
                     >
                         <img
-                            src="../../../public/Images/ContactUs/Github-desktop-logo-symbol.svg.png"
+                            :src="
+                                base +
+                                `/Images/ContactUs/Github-desktop-logo-symbol.svg.png`
+                            "
                             alt="GitHub"
                             class="w-8 h-8 mr-4"
                         />
@@ -42,7 +46,9 @@ const { t } = useTranslation();
                         class="flex items-center p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50"
                     >
                         <img
-                            src="../../../public/Images/ContactUs/LinkedIn_icon.svg.png"
+                            :src="
+                                base + `Images/ContactUs/LinkedIn_icon.svg.png`
+                            "
                             alt="LinkedIn"
                             class="w-8 h-8 mr-4"
                         />
@@ -60,7 +66,10 @@ const { t } = useTranslation();
                         class="flex items-center p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50"
                     >
                         <img
-                            src="../../../public/Images/ContactUs/Mastodon_Logotype_(Simple).svg.png"
+                            :src="
+                                base +
+                                `Images/ContactUs/Mastodon_Logotype_(Simple).svg.png`
+                            "
                             alt="Mastodon"
                             class="w-8 h-8 mr-4"
                         />
@@ -78,7 +87,9 @@ const { t } = useTranslation();
                         class="flex items-center p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50"
                     >
                         <img
-                            src="../../../public/Images/ContactUs/Bluesky_Logo.svg.png"
+                            :src="
+                                base + `/Images/ContactUs/Bluesky_Logo.svg.png`
+                            "
                             alt="Bluesky"
                             class="w-8 h-8 mr-4"
                         />
@@ -96,7 +107,10 @@ const { t } = useTranslation();
                         class="flex items-center p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50"
                     >
                         <img
-                            src="../../../public/Images/ContactUs/Cardiff_University_(logo).svg.png"
+                            :src="
+                                base +
+                                `Images/ContactUs/Cardiff_University_(logo).svg.png`
+                            "
                             alt="Cardiff University"
                             class="w-8 h-8 mr-4"
                         />
